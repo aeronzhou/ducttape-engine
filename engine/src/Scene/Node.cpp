@@ -8,6 +8,7 @@
 
 #include <Scene/Node.hpp>
 
+#include <Logic/ScriptManager.hpp>
 #include <Utils/Utils.hpp>
 #include <Scene/Scene.hpp>
 #include <Scene/Serializer.hpp>
@@ -380,5 +381,91 @@ void Node::disable() {
 void Node::onEnable() {}
 
 void Node::onDisable() {}
+
+QScriptValue Node::getScriptParent() {
+    Node* p_node = getParent();
+
+    return p_node == nullptr ? QScriptValue::UndefinedValue : MAKE_SCRIPTABLE(p_node);
+}
+
+void Node::setScriptParent(QScriptValue parent) {
+    if(parent.isQObject()) {
+        Node* p_node = (Node*)parent.toQObject();
+
+        if(p_node != nullptr) {
+            setParent(p_node);
+        }
+        else {
+            Logger::get().debug("The Node you are setting as Node " + mName + "'s parent has already been deleted.");
+        }
+    }
+    else {
+        Logger::get().error("You are trying to set an invalid Node as Node " + mName + "'s parent.");
+    }
+}
+
+QScriptValue Node::addScriptChildNode(QScriptValue child) {
+    if(child.isQObject()) {
+        Node*  p_node = (Node*)child.toQObject();
+
+        if(p_node != nullptr) {
+            return MAKE_SCRIPTABLE(addChildNode(p_node).get());
+        }
+        else {
+            Logger::get().debug("The Node you are adding as Node " + mName + "'s child has already been deleted.");
+        }
+    }
+    else {
+        Logger::get().error("You are trying to add an invalid Node as Node " + mName + "'s child.");
+    }
+
+    return QScriptValue::UndefinedValue;
+}
+
+QScriptValue Node::addScriptComponent(QScriptValue component) {
+    if(component.isQObject()) {
+        Component* p_component = (Component*)component.toQObject();
+
+        if(p_component != nullptr) {
+            return MAKE_SCRIPTABLE(addComponent<Component>(p_component).get());
+        }
+        else {
+            Logger::get().debug("The Component you are adding as Node " + mName + "'s Component has already been deleted.");
+        }
+    }
+    else {
+        Logger::get().error("You are trying to add an invalid Component as Node " + mName + "'s Component.");
+    }
+
+    return QScriptValue::UndefinedValue;
+}
+
+QScriptValue Node::findScriptComponent(const QString name) {
+    Component* p_component = findComponent<Component>(name).get();
+
+    if(p_component == nullptr) {
+        return QScriptValue::UndefinedValue;
+    }
+    else {
+        return MAKE_SCRIPTABLE(p_component);
+    }
+}
+
+QScriptValue Node::findScriptChildNode(const QString name, bool recursive) {
+    Node* p_node = findChildNode(name, recursive).get();
+
+    if(p_node == nullptr) {
+        return QScriptValue::UndefinedValue;
+    }
+    else {
+        return MAKE_SCRIPTABLE(p_node);
+    }
+}
+
+QScriptValue Node::getScriptScene() {
+    Scene* p_scene = getScene();
+
+    return p_scene == nullptr ? QScriptValue::UndefinedValue : MAKE_SCRIPTABLE(p_scene);
+}
 
 } // namespace dt

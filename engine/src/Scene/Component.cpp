@@ -16,6 +16,7 @@ namespace dt {
 
 Component::Component(const QString name)
     : mName(name),
+      mNode(nullptr),
       mIsEnabled(false),
       mIsInitialized(false) {
     // auto-generate the component name
@@ -33,7 +34,7 @@ const QString Component::getName() const {
 }
 
 QString Component::getFullName() const {
-    return mNode->getFullName() + "/" + getName();
+    return mNode == nullptr ? getName() : mNode->getFullName() + "/" + getName();
 }
 
 void Component::onInitialize() {}
@@ -45,10 +46,6 @@ void Component::onEnable() {}
 void Component::onDisable() {}
 
 void Component::onUpdate(double time_diff) {}
-
-void Component::setNode(Node* node) {
-    mNode = node;
-}
 
 void Component::serialize(IOPacket& packet) {
     // only write type when serializing, it will be read by the Node on deserialization
@@ -70,10 +67,16 @@ Node* Component::getNode() {
     return mNode;
 }
 
+void Component::setNode(Node* node) {
+    if(mNode == nullptr)
+        mNode = node;
+}
+
 QScriptValue Component::getScriptNode() {
+    Node* p_node = getNode();
     // Making QScriptValue from Node. Type conversion in C style only due to limitation of incomplete type.
     // return dt::ScriptManager::GetScriptEngine()->newQObject((QObject*)mNode);
-    return dt::ScriptManager::get()->getScriptEngine()->newQObject(mNode);
+    return p_node == nullptr ? QScriptValue::UndefinedValue : MAKE_SCRIPTABLE(p_node);
 }
 
 void Component::initialize() {

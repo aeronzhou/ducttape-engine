@@ -27,12 +27,13 @@ namespace dt {
 class Node;
 
 /**
-  * Modifier for a node. This will add all the functionality to an otherwise empty node,
+  * Modifier for a Node. This will add all the functionality to an otherwise empty Node,
   * such as a mesh or sound.
   */
 class DUCTTAPE_API Component : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName CONSTANT FINAL)
+    Q_PROPERTY(QString fullName READ getFullName FINAL)
     Q_PROPERTY(bool isEnabled READ isEnabled FINAL)
     Q_PROPERTY(bool isInitialized READ isInitialized FINAL)
     Q_PROPERTY(QScriptValue node READ getScriptNode)
@@ -40,7 +41,7 @@ class DUCTTAPE_API Component : public QObject {
 public:
     
     typedef std::shared_ptr<Component> ComponentSP;
-    
+
     /**
       * Constructor with set name.
       * @param name The Component name.
@@ -53,22 +54,22 @@ public:
     virtual ~Component() = 0;
 
     /**
-      * Called when the component is activated. Initialize all scene objects here.
+      * Called when the Component is activated.
       */
     virtual void onInitialize();
 
     /**
-      * Called when the component is deactivated. Deinitialize all scene objects here.
+      * Called when the Component is deactivated.
       */
     virtual void onDeinitialize();
 
     /**
-      * Called when the component is enabled. Show/enable all scene objects here.
+      * Called when the Component is enabled.
       */
     virtual void onEnable();
 
     /**
-      * Called when the component is disabled. Hide/disable all scene objects here.
+      * Called when the Component is disabled.
       */
     virtual void onDisable();
 
@@ -78,15 +79,31 @@ public:
       */
     virtual void onUpdate(double time_diff);
 
-    /**
-      * Sets the node of this component.
-      * @param node The node to be set.
-      */
-    void setNode(Node* node);
-
     void serialize(IOPacket& packet);
 
     virtual void onSerialize(IOPacket& packet);
+
+    /**
+      * Returns the Node of this Component.
+      * @returns The Node of this Component.
+      */
+    Node* getNode();
+
+    /**
+      * Initializes the Component.
+      */
+    void initialize();
+
+    /**
+      * Deinitializes the Component.
+      */
+    void deinitialize();
+
+     /**
+       * Sets the node of this component. This is called by the Node to which this Component is attached. Do not call it manually.
+       * @param node The node to be set.
+       */
+     void setNode(Node* node);
 
 public slots:
     /**
@@ -96,52 +113,36 @@ public slots:
     const QString getName() const;
 
     /**
-      * Returns the name of the Component, including all parent names.
-      * @returns The name of the Component, including all parent names.
+      * Returns the name of the Component, including all parent names. If this Component has not been attached to a Node, it returns the name of the Component only.
+      * @returns The name of the Component, including all parent names. If this Component has not been attached to a Node, it returns the name of the Component only.
       */
     QString getFullName() const;
 
     /**
-      * Returns the Node of this component.
-      * @returns The Node of this component.
-      */
-    Node* getNode();
-
-    /**
-      * Returns the Node of this component. Used for scripting access.
-      * @returns The Node of this component.
+      * Returns the Node of this Component. Used for scripting access.
+      * @returns The Node of this Component. Returns UndefinedValue when this Component has not been attached to a Node.
       */
     QScriptValue getScriptNode();
 
     /**
-      * Returns whether the component is created.
-      * @returns Whether the component is created.
+      * Returns whether the Component is created.
+      * @returns Whether the Component is created.
       */
     bool isInitialized();
 
     /**
-      * Returns whether the component is enabled.
-      * @returns Whether the component is enabled.
+      * Returns whether the Component is enabled.
+      * @returns Whether the Component is enabled.
       */
     bool isEnabled();
 
     /**
-      * Initializes the component.
-      */
-    void initialize();
-
-    /**
-      * Deinitializes the component.
-      */
-    void deinitialize();
-
-    /**
-      * Enables the component.
+      * Enables the Component.
       */
     void enable();
 
     /**
-      * Disables the component.
+      * Disables the Component.
       */
     void disable();
 
@@ -156,9 +157,9 @@ protected:
     Node* mNode;        //!< The parent Node.
 
 private:
-    bool mIsEnabled;    //!< Whether the component is enabled or not.
-    bool mIsInitialized;    //!< Whether the component has been created or not.
-    QUuid mId;    //!< The id for the component.
+    bool mIsEnabled;    //!< Whether the Component is enabled or not.
+    bool mIsInitialized;    //!< Whether the Component has been created or not.
+    QUuid mId;    //!< The id for the Component.
 };
 
 } // namespace dt

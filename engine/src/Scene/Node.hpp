@@ -31,8 +31,8 @@ class Scene;
 
 /**
   * Basic scene object class.
-  * Any object in a scene is described by a node with a position, scale and rotation
-  * and other child nodes. The Node class is also able to have components to control
+  * Any object in a scene is described by a Node with a position, scale and rotation
+  * and other child Nodes. The Node class is also able to have Components to control
   * its behaviour, e.g. the look or events.
   * @see Component
   */
@@ -41,8 +41,10 @@ class DUCTTAPE_API Node : public QObject {
     Q_ENUMS(RelativeTo)
 
     Q_PROPERTY(QString name READ getName CONSTANT FINAL)
-    Q_PROPERTY(Node* parent READ getParent FINAL)
-    Q_PROPERTY(Scene* scene READ getScene FINAL)
+    Q_PROPERTY(QString fullName READ getFullName FINAL)
+    Q_PROPERTY(QScriptValue parent READ getScriptParent WRITE setScriptParent FINAL)
+    Q_PROPERTY(QScriptValue scene READ getScriptScene FINAL)
+    Q_PROPERTY(bool isEnabled READ isEnabled FINAL)
 
 public:
     
@@ -52,8 +54,8 @@ public:
       * The coordinates space for getting/setting rotation, position and scale.
       */
     enum RelativeTo {
-        PARENT, //!< Relative to the parent node.
-        SCENE   //!< Relative to the scene root node (i.e. absolute value).
+        PARENT, //!< Relative to the parent Node.
+        SCENE   //!< Relative to the scene root Node (i.e. absolute value).
     };
 
     /**
@@ -90,9 +92,9 @@ public:
     Node::NodeSP addChildNode(Node* child);
 
     /**
-      * Assigns a component to this node.
+      * Assigns a Component to this Node.
       * @param component The Component to be assigned.
-      * @returns A pointer to the new component.
+      * @returns A pointer to the new Component.
       */
     template <typename ComponentType>
     std::shared_ptr<ComponentType> addComponent(ComponentType* component) {
@@ -117,15 +119,15 @@ public:
     /**
       * Searches for a Node with the given name and returns a pointer to the first match.
       * @param name The name of the Node searched.
-      * @param recursive Whether to search within child nodes or not.
+      * @param recursive Whether to search within child Nodes or not.
       * @returns A pointer to the Node with the name or nullptr if none is found.
       */
     Node::NodeSP findChildNode(const QString name, bool recursive = true);
 
     /**
-      * Returns a component.
-      * @param name The name of the component to find.
-      * @returns A pointer to the component, or nullptr if no component with the specified name exists.
+      * Returns a Component.
+      * @param name The name of the Component to find.
+      * @returns A pointer to the Component, or nullptr if no Component with the specified name exists.
       */
     template <typename ComponentType>
     std::shared_ptr<ComponentType> findComponent(const QString name) {
@@ -133,25 +135,6 @@ public:
             return std::shared_ptr<ComponentType>();
         return std::dynamic_pointer_cast<ComponentType>(mComponents[name]);
     }
-
-    /**
-      * Returns whether this node has the component assigned.
-      * @param name The name of the Component.
-      * @returns true if the component is assigned, otherwise false
-      */
-    bool hasComponent(const QString name);
-
-    /**
-      * Removes a child Node with a specific name.
-      * @param name The name of the Node to be removed.
-      */
-    void removeChildNode(const QString name);
-
-    /**
-      * Removes a Component with a specific name.
-      * @param name The name of the Component to be removed.
-      */
-    void removeComponent(const QString name);
 
     /**
       * Returns the position of the Node.
@@ -243,19 +226,6 @@ public:
       */
     virtual void onDisable();
 
-public slots:
-    /**
-      * Returns the name of the Node.
-      * @returns The name of the Node.
-      */
-    const QString getName() const;
-
-    /**
-      * Returns the name of the Node, including all parent names.
-      * @returns The name of the Node, including all parent names.
-      */
-    QString getFullName() const;
-
     /**
       * Returns a pointer to the parent Node.
       * @returns A pointer to the parent Node.
@@ -267,6 +237,85 @@ public slots:
       * @returns The Scene this Node is attached to.
       */
     Scene* getScene();
+
+public slots:
+    /**
+      * Returns whether this node has the component assigned.
+      * @param name The name of the Component.
+      * @returns true if the component is assigned, otherwise false
+      */
+    bool hasComponent(const QString name);
+
+    /**
+      * Returns the name of the Node.
+      * @returns The name of the Node.
+      */
+    const QString getName() const;
+
+    /**
+      * Returns the name of the Node, including all parent names. If this Node does not have a parent Node, it returns the name of the Node only.
+      * @returns The name of the Node, including all parent names. If this Node does not have a parent Node, it returns the name of the Node only.
+      */
+    QString getFullName() const;
+
+    /**
+      * Returns a pointer to the parent Node. Used for scripting access.
+      * @returns A pointer to the parent Node. Returns UndefinedValue when this node does not have a parent Node.
+      */
+    QScriptValue getScriptParent();
+
+    /**
+      * Sets the parent Node pointer. Used for setting the parent in script.
+      * @param parent A Node object in script which will become the parent Node.
+      */
+    void setScriptParent(QScriptValue parent);
+
+    /**
+      * Adds a Node as child. Used for adding a child in script.
+      * @param child The Node to be added as child.
+      * @returns An in-script Node object which has been added as a child of this Node.
+      */
+    QScriptValue addScriptChildNode(QScriptValue child);
+
+    /**
+      * Assigns a Component to this Node. Used for adding a Component in script
+      * @param component The Component to be assigned.
+      * @returns An in-script Component object which has been attached to this Node.
+      */
+    QScriptValue addScriptComponent(QScriptValue component);
+
+    /**
+      * Returns a Component.
+      * @param name The name of the Component to find.
+      * @returns An in-script Component object, or UndefinedValue if no Component with the specified name exists.
+      */
+    QScriptValue findScriptComponent(const QString name);
+
+    /**
+      * Searches for a Node with the given name and returns an in-script Node object that is the first match.
+      * @param name The name of the Node searched.
+      * @param recursive Whether to search within child Nodes or not.
+      * @returns An in-script Node object with the name or UndefinedValue if none is found.
+      */
+    QScriptValue findScriptChildNode(const QString name, bool recursive = true);
+
+    /**
+      * Returns the Scene this Node is attached to. Used for scripting access.
+      * @returns The Scene this Node is attached to. Returns UndefinedValue when this node does not belong to any scenes.
+      */
+    QScriptValue getScriptScene();
+
+    /**
+      * Removes a child Node with a specific name.
+      * @param name The name of the Node to be removed.
+      */
+    void removeChildNode(const QString name);
+
+    /**
+      * Removes a Component with a specific name.
+      * @param name The name of the Component to be removed.
+      */
+    void removeComponent(const QString name);
 
     /**
       * Sets the position of the Node.

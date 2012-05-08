@@ -19,6 +19,8 @@
 #include <QScriptEngine>
 #include <QScriptProgram>
 
+#define MAKE_SCRIPTABLE(obj) dt::ScriptManager::get()->getScriptEngine()->newQObject(obj)
+
 namespace dt {
 
 /**
