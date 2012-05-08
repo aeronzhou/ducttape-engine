@@ -16,9 +16,10 @@
 #include <OgreProcedural.h>
 
 void Main::onInitialize() {
-    dt::ResourceManager::get()->addDataPath(QDir("./fps/data"));
+    dt::ResourceManager::get()->addDataPath(QDir("./fps"));
+    dt::ResourceManager::get()->addResourceLocation("", "FileSystem");
     dt::ResourceManager::get()->addResourceLocation("gui","FileSystem", true);
-    dt::ResourceManager::get()->addResourceLocation("","FileSystem");
+    dt::ResourceManager::get()->addResourceLocation("data","FileSystem");
     dt::ResourceManager::get()->addResourceLocation("crate", "FileSystem");
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 

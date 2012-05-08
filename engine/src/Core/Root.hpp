@@ -164,7 +164,7 @@ private:
     NetworkManager* mNetworkManager;    //!< Pointer to the NetworkManager.
     PhysicsManager* mPhysicsManager;    //!< Pointer to the PhysicsManager.
     TerrainManager* mTerrainManager;    //!< Pointer to the TerrainManager.
-    ScriptManager* mScriptManager;      //!< Pointer to the ScriptManager;
+    ScriptManager* mScriptManager;      //!< Pointer to the ScriptManager.
 };
 
 }
