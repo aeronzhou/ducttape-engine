@@ -36,7 +36,7 @@ class Scene;
   * its behaviour, e.g. the look or events.
   * @see Component
   */
-class DUCTTAPE_API Node : public QObject {
+class DUCTTAPE_API Node : public QObject, IMPLEMENTS IScriptable {
     Q_OBJECT
     Q_ENUMS(RelativeTo)
 
@@ -237,6 +237,13 @@ public:
       * @returns The Scene this Node is attached to.
       */
     Scene* getScene();
+
+    /**
+      * Returns a QtScript object.
+      * @returns A QtScript object.
+      * @see IScriptable
+      */
+    QScriptValue toQtScriptObject();
 
 public slots:
     /**

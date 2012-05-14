@@ -385,7 +385,7 @@ void Node::onDisable() {}
 QScriptValue Node::getScriptParent() {
     Node* p_node = getParent();
 
-    return p_node == nullptr ? QScriptValue::UndefinedValue : MAKE_SCRIPTABLE(p_node);
+    return p_node == nullptr ? QScriptValue::UndefinedValue : p_node->toQtScriptObject();
 }
 
 void Node::setScriptParent(QScriptValue parent) {
@@ -409,7 +409,7 @@ QScriptValue Node::addScriptChildNode(QScriptValue child) {
         Node*  p_node = (Node*)child.toQObject();
 
         if(p_node != nullptr) {
-            return MAKE_SCRIPTABLE(addChildNode(p_node).get());
+            return addChildNode(p_node)->toQtScriptObject();
         }
         else {
             Logger::get().debug("The Node you are adding as Node " + mName + "'s child has already been deleted.");
@@ -427,7 +427,7 @@ QScriptValue Node::addScriptComponent(QScriptValue component) {
         Component* p_component = (Component*)component.toQObject();
 
         if(p_component != nullptr) {
-            return MAKE_SCRIPTABLE(addComponent<Component>(p_component).get());
+            return addComponent<Component>(p_component)->toQtScriptObject();
         }
         else {
             Logger::get().debug("The Component you are adding as Node " + mName + "'s Component has already been deleted.");
@@ -447,7 +447,7 @@ QScriptValue Node::findScriptComponent(const QString name) {
         return QScriptValue::UndefinedValue;
     }
     else {
-        return MAKE_SCRIPTABLE(p_component);
+        return p_component->toQtScriptObject();
     }
 }
 
@@ -458,14 +458,18 @@ QScriptValue Node::findScriptChildNode(const QString name, bool recursive) {
         return QScriptValue::UndefinedValue;
     }
     else {
-        return MAKE_SCRIPTABLE(p_node);
+        return p_node->toQtScriptObject();
     }
 }
 
 QScriptValue Node::getScriptScene() {
     Scene* p_scene = getScene();
 
-    return p_scene == nullptr ? QScriptValue::UndefinedValue : MAKE_SCRIPTABLE(p_scene);
+    return p_scene == nullptr ? QScriptValue::UndefinedValue : p_scene->toQtScriptObject();
+}
+
+QScriptValue Node::toQtScriptObject() {
+    ScriptManager::get()->getScriptEngine()->newQObject(this);
 }
 
 } // namespace dt

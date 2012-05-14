@@ -12,6 +12,7 @@
 #include <Config.hpp>
 
 #include <Utils/Utils.hpp>
+#include <Logic/IScriptable.hpp>
 #include <Network/IOPacket.hpp>
 #include <Scene/Serializer.hpp>
 
@@ -30,7 +31,7 @@ class Node;
   * Modifier for a Node. This will add all the functionality to an otherwise empty Node,
   * such as a mesh or sound.
   */
-class DUCTTAPE_API Component : public QObject {
+class DUCTTAPE_API Component : public QObject, IMPLEMENTS IScriptable {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName CONSTANT FINAL)
     Q_PROPERTY(QString fullName READ getFullName FINAL)
@@ -104,6 +105,13 @@ public:
        * @param node The node to be set.
        */
      void setNode(Node* node);
+
+     /**
+       * Returns a QtScript object.
+       * @returns A QtScript object.
+       * @see IScriptable
+       */
+     QScriptValue toQtScriptObject();
 
 public slots:
     /**
