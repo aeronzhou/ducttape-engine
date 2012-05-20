@@ -22,8 +22,7 @@
 
 namespace dt {
 
-    // Forward declaration.
-    class Quaterion;
+    class Quaternion;
 
     /**
       * A class to hold a 3-dimensional vector. Refers to Ogre::Vector3.
@@ -112,14 +111,14 @@ namespace dt {
           * @param other The other Vector3.
           * @returns The rotation quaterion.
           */
-        Quaterion getRotationTo(const Vector3& other) const;
+        Quaternion getRotationTo(const Vector3& other) const;
 
         /**
           * Gets the reflection Vector3 of this Vector3 from a normal Vector3.
           * @param normal The normal Vector3.
           * @returns The reflection Vector3.
           */
-        Vector3 getReflection(const Vector3& normal) const;
+        Vector3 getReflection(Vector3& normal) const;
 
         Vector3 operator + (const Vector3& other) const;
 
@@ -130,6 +129,13 @@ namespace dt {
         Vector3 operator * (const float multiplier) const;
 
         Vector3 operator * (const Vector3& multiplier) const;
+
+        Vector3 operator = (const Vector3 &v) {
+            mX = v.mX;
+            mY = v.mY;
+            mZ = v.mZ;
+            return *this;
+        }
 
     public slots:
         /**
