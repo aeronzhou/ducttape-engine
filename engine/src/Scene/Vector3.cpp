@@ -76,14 +76,14 @@ namespace dt {
         return dot_product / (this->getLength() * other.getLength());
     }
 
-    Quaterion Vector3::getRotationTo(const Vector3& other) const {
-        return Quaterion();
+    Quaternion Vector3::getRotationTo(const Vector3& other) const {
+        return Quaternion();
     }
 
-    Vector3 Vector3::getReflection(const Vector3& normal) const {
+    Vector3 Vector3::getReflection(Vector3& normal) const {
         normal.normalise();
 
-        return *this - this->dotProduct(normal).dotProduct(normal) * 2;
+        return *this - normal * dotProduct(normal) * 2;
     }
 
     Vector3 Vector3::operator + (const Vector3& other) const {

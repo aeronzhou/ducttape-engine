@@ -11,7 +11,8 @@
 
 #include <Config.hpp>
 
-#include <QScriptProgram>
+#include <qscriptprogram.h>
+#include <qscriptvalue.h>
 
 namespace dt {
     /**
