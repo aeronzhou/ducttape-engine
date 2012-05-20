@@ -469,7 +469,7 @@ QScriptValue Node::getScriptScene() {
 }
 
 QScriptValue Node::toQtScriptObject() {
-    ScriptManager::get()->getScriptEngine()->newQObject(this);
+    return ScriptManager::get()->getScriptEngine()->newQObject(this);
 }
 
 } // namespace dt
