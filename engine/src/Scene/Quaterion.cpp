@@ -17,6 +17,12 @@ namespace dt {
           mZ(z),
           mW(w) {}
 
+    Quaternion::Quaternion(const Quaternion &other)
+        : mX(other.mX),
+          mY(other.mY),
+          mZ(other.mZ),
+          mW(other.mW) {}
+
     Quaternion::Quaternion(const Ogre::Quaternion &ogre_quaternion)
         : mX(ogre_quaternion.x),
           mY(ogre_quaternion.y),
@@ -40,32 +46,32 @@ namespace dt {
         return *(&mW+i);
     }
 
-    inline Quaternion& Quaternion::operator = (const Quaternion &q)
+    inline Quaternion& Quaternion::operator = (const Quaternion &other)
     {
-        mX = q.mX;
-        mY = q.mY;
-        mZ = q.mZ;
-        mW = q.mW;
+        mX = other.mX;
+        mY = other.mY;
+        mZ = other.mZ;
+        mW = other.mW;
         return *this;
     }
 
-    inline Quaternion Quaternion::operator + (const Quaternion &q) const
+    inline Quaternion Quaternion::operator + (const Quaternion &other) const
     {
-        return Quaternion(mX + q.mX, mY + q.mY, mZ + q.mZ, mW + q.mW);
+        return Quaternion(mX + other.mX, mY + other.mY, mZ + other.mZ, mW + other.mW);
     }
 
-    inline Quaternion Quaternion::operator - (const Quaternion &q) const
+    inline Quaternion Quaternion::operator - (const Quaternion &other) const
     {
-        return Quaternion(mX - q.mX, mY - q.mY, mZ - q.mZ, mW - q.mW);
+        return Quaternion(mX - other.mX, mY - other.mY, mZ - other.mZ, mW - other.mW);
     }
 
-    inline Quaternion Quaternion::operator * (const Quaternion &q) const
+    inline Quaternion Quaternion::operator * (const Quaternion &other) const
     {
         return Quaternion(
-            mW * q.mW - mX * q.mX - mY * q.mY - mZ * q.mZ,
-            mW * q.mX + mX * q.mW + mY * q.mZ - mZ * q.mY,
-            mW * q.mY + mY * q.mW + mZ * q.mX - mX * q.mZ,
-            mW * q.mZ + mZ * q.mW + mX * q.mY - mY * q.mX
+            mW * other.mW - mX * other.mX - mY * other.mY - mZ * other.mZ,
+            mW * other.mX + mX * other.mW + mY * other.mZ - mZ * other.mY,
+            mW * other.mY + mY * other.mW + mZ * other.mX - mX * other.mZ,
+            mW * other.mZ + mZ * other.mW + mX * other.mY - mY * other.mX
             );
     }
 
@@ -90,11 +96,11 @@ namespace dt {
         return !operator==(rhs);
     }
 
-    Ogre::Vector3 Quaternion::operator * (const Ogre::Vector3 &v) const
+    Vector3 Quaternion::operator * (const Vector3 &v) const
     {
         // nVidia SDK implementation
-        Ogre::Vector3 uv, uuv;
-        Ogre::Vector3 qvec(mX, mY, mZ);
+        Vector3 uv, uuv;
+        Vector3 qvec(mX, mY, mZ);
         uv = qvec.crossProduct(v);
         uuv = qvec.crossProduct(uv);
         uv = uv * (2.0f * mW);
@@ -112,27 +118,22 @@ namespace dt {
     inline void Quaternion::setY(const float y) { mY = y; }
     inline void Quaternion::setZ(const float z) { mZ = z; }
 
-    inline void Quaternion::assign(const Quaternion &q) { (*this) = q; }
-    inline void Quaternion::add(const Quaternion &q) { (*this) = (*this) + q; }
-    inline void Quaternion::subtract(const Quaternion &q) { (*this) = (*this) - q; }
-    inline void Quaternion::scale(const float scalar) { (*this) = (*this) * scalar;}
-
-    void Quaternion::swap(Quaternion &q)
+    void Quaternion::swap(Quaternion &other)
     {
-        std::swap(mX, q.mX);
-        std::swap(mY, q.mY);
-        std::swap(mZ, q.mZ);
-        std::swap(mW, q.mW);
+        std::swap(mX, other.mX);
+        std::swap(mY, other.mY);
+        std::swap(mZ, other.mZ);
+        std::swap(mW, other.mW);
     }
 
-    float Quaternion::dotProduct(const Quaternion &q) const
+    float Quaternion::dotProduct(const Quaternion &other) const
     {
-        return mX * q.mX + mY * q.mY + mZ * q.mZ + mW * q.mW;
+        return mX * other.mX + mY * other.mY + mZ * other.mZ + mW * other.mW;
     }
 
-    Quaternion Quaternion::crossProduct(const Quaternion &q) const
+    Quaternion Quaternion::crossProduct(const Quaternion &other) const
     {
-        return (*this) * q;
+        return (*this) * other;
     }
 
     float Quaternion::getLength() const
@@ -165,18 +166,18 @@ namespace dt {
         return asinf(-2 * (mX * mZ - mW * mY));
     }
 
-    void Quaternion::fromAngleAxis(const float &angle, const Ogre::Vector3 &axis)
+    void Quaternion::fromAngleAxis(const float &angle, const Vector3 &axis)
     {
         // from Ogre
         float halfAngle = 0.5f * angle;
         float sin = sinf(halfAngle);
         mW = cos(halfAngle);
-        mX = sin * axis.x;//getX();
-        mY = sin * axis.y;//getY();
-        mZ = sin * axis.z;//getZ();
+        mX = sin * axis.getX();
+        mY = sin * axis.getY();
+        mZ = sin * axis.getZ();
     }
 
-    void Quaternion::toAngleAxis(float &angle, Ogre::Vector3 &axis) const
+    void Quaternion::toAngleAxis(float &angle, Vector3 &axis) const
     {
         // from Ogre
         float sqrLength = mX * mX + mY * mY + mZ * mZ;
@@ -188,24 +189,24 @@ namespace dt {
             {
                 invLength = 1.0f / invLength;
             }
-            axis.x = (mX * invLength);
-            axis.y = (mY * invLength);
-            axis.z = (mZ * invLength);
+            axis.setX(mX * invLength);
+            axis.setY(mY * invLength);
+            axis.setZ(mZ * invLength);
         }
         else
         {
             // angle is 0 (mod 2*pi), so any axis will do
             angle = 0.0f;
-            axis.x = (1.0f);
-            axis.y = (0.0f);
-            axis.z = (0.0f);
+            axis.setX(1.0f);
+            axis.setY(0.0f);
+            axis.setZ(0.0f);
         }
     }
 
-    void Quaternion::scriptSwap(QScriptValue q)
+    void Quaternion::scriptSwap(QScriptValue other)
     {
-        if(q.isQObject()) {
-            Quaternion* p_qua = (Quaternion*)q.toQObject();
+        if(other.isQObject()) {
+            Quaternion* p_qua = (Quaternion*)other.toQObject();
             if(p_qua != nullptr) {
                 swap(*p_qua);
             }
@@ -218,10 +219,10 @@ namespace dt {
         }
     }
 
-    float Quaternion::scriptDotProduct(QScriptValue q) const
+    float Quaternion::scriptDotProduct(QScriptValue other) const
     {
-        if(q.isQObject()) {
-            Quaternion* p_qua = (Quaternion*)q.toQObject();
+        if(other.isQObject()) {
+            Quaternion* p_qua = (Quaternion*)other.toQObject();
             if(p_qua != nullptr) {
                 return dotProduct(*p_qua);
             }
@@ -236,10 +237,10 @@ namespace dt {
         return 0.0f;
     }
 
-    QScriptValue Quaternion::scriptCrossProduct(QScriptValue q) const
+    QScriptValue Quaternion::scriptCrossProduct(QScriptValue other) const
     {
-        if(q.isQObject()) {
-            Quaternion* p_qua = (Quaternion*)q.toQObject();
+        if(other.isQObject()) {
+            Quaternion* p_qua = (Quaternion*)other.toQObject();
             if(p_qua != nullptr) {
                 return crossProduct(*p_qua).toQtScriptObject();
             }
@@ -257,7 +258,7 @@ namespace dt {
     void Quaternion::scriptFromAngleAxis(float angle, QScriptValue axis)
     {
         if(axis.isQObject()) {
-            Ogre::Vector3* p_qua = (Ogre::Vector3*)axis.toQObject();
+            Vector3* p_qua = (Vector3*)axis.toQObject();
             if(p_qua != nullptr) {
                 fromAngleAxis(angle, *p_qua);
             }
@@ -273,7 +274,7 @@ namespace dt {
     void Quaternion::scriptToAngleAxis(float &angle, QScriptValue &axis) const
     {
         if(axis.isQObject()) {
-            Ogre::Vector3* p_qua = (Ogre::Vector3*)axis.toQObject();
+            Vector3* p_qua = (Vector3*)axis.toQObject();
             if(p_qua != nullptr) {
                 toAngleAxis(angle, *p_qua);
             }
@@ -291,7 +292,44 @@ namespace dt {
         return ScriptManager::get()->getScriptEngine()->newQObject(this);
     }
 
-    //bool Quaternion::equals(const Quaternion &q, const float tolerance) const
-    //{
-    //}
+    QScriptValue Quaternion::scriptAdd(QScriptValue other) const
+    {
+        if(other.isQObject()) {
+            Quaternion* p_qua = (Quaternion*)other.toQObject();
+            if(p_qua != nullptr) {
+                return (*this + *p_qua).toQtScriptObject();
+            }
+            else {
+                Logger::get().debug("The Quaternion you are trying to use has been deleted.");
+            }
+        }
+        else {
+            Logger::get().error("Invalid Quaternion object.");
+        }
+
+        return QScriptValue::UndefinedValue;
+    }
+
+    QScriptValue Quaternion::scriptSubtract(QScriptValue other) const
+    {
+        if(other.isQObject()) {
+            Quaternion* p_qua = (Quaternion*)other.toQObject();
+            if(p_qua != nullptr) {
+                return (*this - *p_qua).toQtScriptObject();
+            }
+            else {
+                Logger::get().debug("The Quaternion you are trying to use has been deleted.");
+            }
+        }
+        else {
+            Logger::get().error("Invalid Quaternion object.");
+        }
+
+        return QScriptValue::UndefinedValue;
+    }
+
+    QScriptValue Quaternion::scriptScale(float scalar) const
+    {
+        return ((*this) * scalar).toQtScriptObject();
+    }
 }
