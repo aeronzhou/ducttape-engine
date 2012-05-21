@@ -13,17 +13,16 @@
 
 #include <Logic/IScriptable.hpp>
 #include <Logic/ScriptManager.hpp>
-//#include <Scene/Vector3.hpp>
+#include <Scene/Vector3.hpp>
 
 #include <OGRE/OgreQuaternion.h>
-#include <OGRE/OgreVector3.h>
 
 #include <QScriptProgram>
 #include <QObject>
 
 namespace dt {
 
-    //class Vector3d;
+    class Vector3;
 
     /**
       * A class to hold a 4-dimensional vector.
@@ -43,6 +42,11 @@ namespace dt {
           * Non-parameter constructor which constructs a Quaternion with (0.0f, 0.0f, 0.0f, 0.0f).
           */
         Quaternion(void);
+
+        /**
+          * Copy constructor. (to avoid inaccessibility of QObject copy constructor)
+          */
+        Quaternion(const Quaternion &other);
 
         /**
           * Uses the given x, y, z, w value to construct a Quaternion.
@@ -68,17 +72,47 @@ namespace dt {
 #pragma region operator_override
         float operator [] (const uint32_t i) const;
         float& operator [] (const uint32_t i);
-        Quaternion& operator = (const Quaternion &q);
-        Quaternion operator + (const Quaternion &q) const;
-        Quaternion operator - (const Quaternion &q) const;
-        Quaternion operator * (const Quaternion &q) const;
+        Quaternion& operator = (const Quaternion &other);
+        Quaternion operator + (const Quaternion &other) const;
+        Quaternion operator - (const Quaternion &other) const;
+        Quaternion operator * (const Quaternion &other) const;
         Quaternion operator * (const float scalar) const;
         Quaternion operator- () const;
         bool operator== (const Quaternion &rhs) const;
         bool operator!= (const Quaternion &rhs) const;
-        Ogre::Vector3 operator * (const Ogre::Vector3 &vec) const;
+        Vector3 operator * (const Vector3 &vec) const;
 #pragma endregion
 
+        /**
+          * Swaps two the value of two quaternion.
+          * @param other The other Quaternion.
+          */
+        void swap(Quaternion &other);
+
+        /**
+          * Dot product of two quaternion.
+          * @param other The other Quaternion.
+          * @returns The result of dot product.
+          */
+        float dotProduct(const Quaternion &other) const;
+
+        /**
+          * Cross product of two quaternion.
+          * @param other The other Quaternion.
+          * @returns The result of cross product.
+          */
+        Quaternion crossProduct(const Quaternion &other) const;
+
+        /**
+          * Returns a QtScript object.
+          * @returns A QtScript object.
+          * @see IScriptable
+          */
+        virtual QScriptValue toQtScriptObject();
+
+    public slots:
+
+#pragma region getter_setter
         /**
           * Gets the w value of this Quaternion.
           * @returns The w value.
@@ -126,31 +160,7 @@ namespace dt {
           * @param z The new z value.
           */
         void setZ(const float z);
-
-        void assign(const Quaternion &q);
-        void add(const Quaternion &q);
-        void subtract(const Quaternion &q);
-        void scale(const float scalar);
-
-        /**
-          * Swaps two the value of two quaternion.
-          * @param other The other Quaternion.
-          */
-        void swap(Quaternion& other);
-
-        /**
-          * Dot product of two quaternion.
-          * @param q The other Quaternion.
-          * @returns The result of dot product.
-          */
-        float dotProduct(const Quaternion &q) const;
-
-        /**
-          * Cross product of two quaternion.
-          * @param q The other Quaternion.
-          * @returns The result of cross product.
-          */
-        Quaternion crossProduct(const Quaternion &q) const;
+#pragma endregion
 
         /**
           * Normalise quaternion.
@@ -187,35 +197,35 @@ namespace dt {
           * @param angle Angle to rotate.
           * @param axis Axis to rotate around.
           */
-        void fromAngleAxis(const float &angle, const Ogre::Vector3 &axis);
+        void fromAngleAxis(const float &angle, const Vector3 &axis);
 
         /**
           * Construct angle and axis from quaternion.
           * @param angle Angle to rotate.
           * @param axis Axis to rotate around.
           */
-        void toAngleAxis(float &angle, Ogre::Vector3 &axis) const;
+        void toAngleAxis(float &angle, Vector3 &axis) const;
 
 #pragma region script_function
         /**
           * Swaps two the value of two quaternion. For script use.
           * @param other The other Quaternion.
           */
-        void scriptSwap(QScriptValue q);
+        void scriptSwap(QScriptValue other);
 
         /**
           * Dot product of two quaternion. For script use.
-          * @param q The other Quaternion.
+          * @param other The other Quaternion.
           * @returns The result of dot product.
           */
-        float scriptDotProduct(QScriptValue q) const;
+        float scriptDotProduct(QScriptValue other) const;
 
         /**
           * Cross product of two quaternion. For script use.
-          * @param q The other Quaternion.
+          * @param other The other Quaternion.
           * @returns The result of cross product.
           */
-        QScriptValue scriptCrossProduct(QScriptValue q) const;
+        QScriptValue scriptCrossProduct(QScriptValue other) const;
 
         /**
           * Construct quaternion from angle and axis. For script use.
@@ -231,18 +241,28 @@ namespace dt {
           */
         void scriptToAngleAxis(float &angle, QScriptValue &axis) const;
 
-        void scriptAssign(QScriptValue q) const;
-        QScriptValue scriptAdd(QScriptValue q) const;
-        QScriptValue scriptSubtract(QScriptValue q) const;
-        QScriptValue scriptScale(QScriptValue q) const;
-#pragma endregion
+        /**
+          * Adds this Quaternion with another Quaternion. For script use.
+          * @param other The other Quaternion.
+          * @returns The result.
+          */
+        QScriptValue scriptAdd(QScriptValue other) const;
 
         /**
-          * Returns a QtScript object.
-          * @returns A QtScript object.
-          * @see IScriptable
+          * Subtracts this Quaternion by another Quaternion. For script use.
+          * @param other The other Quaternion.
+          * @returns The result.
           */
-        virtual QScriptValue toQtScriptObject();
+        QScriptValue scriptSubtract(QScriptValue other) const;
+
+        /**
+          * Scales this Quaternion by a number. For script use.
+          * @param scalar The scalar.
+          * @returns The result.
+          */
+        QScriptValue scriptScale(float scalar) const;
+#pragma endregion
+
     private:
         float mW;         //!< The w value of the Quaternion.
         float mX;         //!< The x value of the Quaternion.

@@ -16,6 +16,8 @@ namespace dt {
           mY(y),
           mZ(z) {}
 
+    Vector3::Vector3(const Vector3 &other) : mX(other.mX), mY(other.mY), mZ(other.mZ) {}
+
     Vector3::Vector3(const Ogre::Vector3& ogre_vector)
         : mX(ogre_vector.x),
           mY(ogre_vector.y),

@@ -12,13 +12,13 @@
 #include <Config.hpp>
 
 #include <Logic/IScriptable.hpp>
-#include <Scene/Quaterion.hpp>
 #include <Logic/ScriptManager.hpp>
+#include <Scene/Quaterion.hpp>
 
 #include <OGRE/OgreVector3.h>
 
 #include <QScriptProgram>
-#include <QObject>
+//#include <QObject>
 
 namespace dt {
 
@@ -37,6 +37,11 @@ namespace dt {
           * Non-parameter constructor which constructs a Vector3 with (0.0f, 0.0f, 0.0f).
           */
         Vector3();
+
+        /**
+          * Copy constructor. (to avoid inaccessibility of QObject copy constructor)
+          */
+        Vector3(const Vector3 &other);
 
         /**
           * Uses the given x, y and z value to construct a Vector3.
