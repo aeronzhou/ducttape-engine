@@ -19,7 +19,10 @@
 
 // Makes interface available for C++
 // Refers to http://www.codeguru.com/cpp/cpp/cpp_mfc/oop/article.php/c9989/Using-Interfaces-in-C.htm
+#ifndef IMPLEMENTS
 #define IMPLEMENTS public
+#endif
+
 #ifdef _MSC_VER
 #define INTERFACE(name) __interface actual_##name {
 #define BASED_INTERFACE(name, base) __interface actual_##name : public base {
