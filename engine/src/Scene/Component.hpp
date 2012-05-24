@@ -31,7 +31,7 @@ class Node;
   * Modifier for a Node. This will add all the functionality to an otherwise empty Node,
   * such as a mesh or sound.
   */
-class DUCTTAPE_API Component : public QObject, IMPLEMENTS IScriptable {
+class DUCTTAPE_API Component : public QObject, public IScriptable {
     Q_OBJECT
     Q_PROPERTY(QString name READ getName CONSTANT FINAL)
     Q_PROPERTY(QString fullName READ getFullName FINAL)

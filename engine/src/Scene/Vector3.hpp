@@ -27,7 +27,7 @@ namespace dt {
     /**
       * A class to hold a 3-dimensional vector. Refers to Ogre::Vector3.
       */
-    class Vector3 : public QObject, IMPLEMENTS IScriptable {
+    class Vector3 : public QObject, public IScriptable {
         Q_OBJECT
         Q_PROPERTY(float x READ getX WRITE setX FINAL)
         Q_PROPERTY(float y READ getY WRITE setY FINAL)
@@ -62,6 +62,16 @@ namespace dt {
           * @returns The Ogre Vector3.
           */
         Ogre::Vector3 getOgreVector3() const;
+
+        // special values
+        static const Vector3 ZERO;
+        static const Vector3 UNIT_X;
+        static const Vector3 UNIT_Y;
+        static const Vector3 UNIT_Z;
+        static const Vector3 NEGATIVE_UNIT_X;
+        static const Vector3 NEGATIVE_UNIT_Y;
+        static const Vector3 NEGATIVE_UNIT_Z;
+        static const Vector3 UNIT_SCALE;
 
         /**
           * Swaps two the value of two Vector3.
@@ -135,13 +145,20 @@ namespace dt {
 
         Vector3 operator * (const Vector3& multiplier) const;
 
-        Vector3 operator = (const Vector3 &v) {
-            mX = v.mX;
-            mY = v.mY;
-            mZ = v.mZ;
-            return *this;
-        }
+        Vector3 operator = (const Vector3 &v);
 
+        inline friend std::ostream& operator <<
+            ( std::ostream& o, const Vector3& v )
+        {
+            o << v.mX << " " << v.mY << " " << v.mZ;
+            return o;
+        }
+        inline friend std::istream& operator >>
+            ( std::istream& i, Vector3& v )
+        {
+            i >> v.mX >> v.mY >> v.mZ;
+            return i;
+        }
     public slots:
         /**
           * Normalises the Vector3.
@@ -250,14 +267,6 @@ namespace dt {
           * @returns The reflection Vector3.
           */
         QScriptValue scriptGetReflection(QScriptValue normal) const;
-
-        /**
-          * Gets the refraction Vector3 of this Vector3 from a normal Vector3 with a refraction rate. For script use.
-          * @param normal The normal Vector3.
-          * @param refraction_rate The refraction rate.
-          * @returns The refraction Vector3.
-          */
-        QScriptValue scriptGetRefraction(QScriptValue normal, float refraction_rate) const;
 
         /**
           * Adds this Vector3 with another Vector3. For script use.

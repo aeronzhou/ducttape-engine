@@ -11,12 +11,12 @@
 namespace dt {
     Vector3::Vector3() : mX(0.0f), mY(0.0f), mZ(0.0f) {}
 
+    Vector3::Vector3(const Vector3 &other) : mX(other.mX), mY(other.mY), mZ(other.mZ) {}
+
     Vector3::Vector3(const float x, const float y, const float z)
         : mX(x),
           mY(y),
           mZ(z) {}
-
-    Vector3::Vector3(const Vector3 &other) : mX(other.mX), mY(other.mY), mZ(other.mZ) {}
 
     Vector3::Vector3(const Ogre::Vector3& ogre_vector)
         : mX(ogre_vector.x),
@@ -26,6 +26,15 @@ namespace dt {
     Ogre::Vector3 Vector3::getOgreVector3() const {
         return Ogre::Vector3(mX, mY, mZ);
     }
+
+    const Vector3 Vector3::ZERO( 0, 0, 0 );
+    const Vector3 Vector3::UNIT_X( 1, 0, 0 );
+    const Vector3 Vector3::UNIT_Y( 0, 1, 0 );
+    const Vector3 Vector3::UNIT_Z( 0, 0, 1 );
+    const Vector3 Vector3::NEGATIVE_UNIT_X( -1,  0,  0 );
+    const Vector3 Vector3::NEGATIVE_UNIT_Y(  0, -1,  0 );
+    const Vector3 Vector3::NEGATIVE_UNIT_Z(  0,  0, -1 );
+    const Vector3 Vector3::UNIT_SCALE(1, 1, 1);
 
     void Vector3::swap(Vector3& other) {
         float x = other.mX;
@@ -106,6 +115,13 @@ namespace dt {
 
     Vector3 Vector3::operator * (const Vector3& multiplier) const {
         return this->crossProduct(multiplier);
+    }
+
+    Vector3 Vector3::operator = (const Vector3 &v) {
+        mX = v.mX;
+        mY = v.mY;
+        mZ = v.mZ;
+        return *this;
     }
 
     void Vector3::normalise() {
@@ -223,5 +239,99 @@ namespace dt {
 
     QScriptValue Vector3::scriptGetRandomDeviant(float angle_range) const {
         return getRandomDeviant(angle_range).toQtScriptObject();
+    }
+
+    float Vector3::scriptGetAngleBetween(QScriptValue other) const {
+        if(other.isQObject()) {
+            Vector3* p_vec = (Vector3*)other.toQObject();
+
+            if(p_vec != nullptr) {
+                return this->getAngleBetween(*p_vec);
+            }
+            else {
+                Logger::get().debug("The Vector3 you are trying to use has been deleted.");
+            }
+        }
+        else {
+            Logger::get().error("Invalid Vector3 object.");
+        }
+
+        return 0.0f;
+    }
+
+    QScriptValue Vector3::scriptGetRotationTo(QScriptValue other) const {
+        if(other.isQObject()) {
+            Vector3* p_vec = (Vector3*)other.toQObject();
+
+            if(p_vec != nullptr) {
+                return (this->getRotationTo(*p_vec)).toQtScriptObject();
+            }
+            else {
+                Logger::get().debug("The Vector3 you are trying to use has been deleted.");
+            }
+        }
+        else {
+            Logger::get().error("Invalid Vector3 object.");
+        }
+
+        return QScriptValue::UndefinedValue;
+    }
+
+    QScriptValue Vector3::scriptGetReflection(QScriptValue normal) const {
+        if(normal.isQObject()) {
+            Vector3* p_norvec = (Vector3*)normal.toQObject();
+
+            if(p_norvec != nullptr) {
+                return (this->getReflection(*p_norvec)).toQtScriptObject();
+            }
+            else {
+                Logger::get().debug("The Vector3 you are trying to use has been deleted.");
+            }
+        }
+        else {
+            Logger::get().error("Invalid Vector3 object.");
+        }
+
+        return QScriptValue::UndefinedValue;
+    }
+
+    QScriptValue Vector3::scriptAdd(QScriptValue other) const {
+        if(other.isQObject()) {
+            Vector3* p_vec = (Vector3*)other.toQObject();
+
+            if(p_vec != nullptr) {
+                return (*this + *p_vec).toQtScriptObject();
+            }
+            else {
+                Logger::get().debug("The Vector3 you are trying to use has been deleted.");
+            }
+        }
+        else {
+            Logger::get().error("Invalid Vector3 object.");
+        }
+
+        return QScriptValue::UndefinedValue;
+    }
+
+    QScriptValue Vector3::scriptSubtract(QScriptValue other) const {
+        if(other.isQObject()) {
+            Vector3* p_vec = (Vector3*)other.toQObject();
+
+            if(p_vec != nullptr) {
+                return (*this - *p_vec).toQtScriptObject();
+            }
+            else {
+                Logger::get().debug("The Vector3 you are trying to use has been deleted.");
+            }
+        }
+        else {
+            Logger::get().error("Invalid Vector3 object.");
+        }
+
+        return QScriptValue::UndefinedValue;
+    }
+
+    QScriptValue Vector3::scriptMultiply(float multiplier) const {
+        return ((*this) * multiplier).toQtScriptObject();
     }
 }

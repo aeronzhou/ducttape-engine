@@ -52,7 +52,7 @@ void SimplePlayerComponent::onUpdate(double time_diff) {
     if(mMove.length() > 0) {
         static Ogre::Vector3 move;
         if(mInputStateChanged) {
-           move = getNode()->getRotation() * mMove; //update movement direction
+            move = getNode()->getRotation().getOgreQuaternion() * mMove; //update movement direction
         }
 
         getNode()->setPosition(getNode()->getPosition() + move * time_diff * mMoveSpeed);
@@ -143,7 +143,7 @@ void SimplePlayerComponent::_handleMouseInput(const OIS::MouseEvent& event) {
         // watch out for da gimbal lock !!
 
         Ogre::Matrix3 orientMatrix;
-        getNode()->getRotation().ToRotationMatrix(orientMatrix);
+        getNode()->getRotation().getOgreQuaternion().ToRotationMatrix(orientMatrix);
 
         Ogre::Radian yaw, pitch, roll;
         orientMatrix.ToEulerAnglesYXZ(yaw, pitch, roll);

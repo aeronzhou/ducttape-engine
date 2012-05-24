@@ -9,30 +9,33 @@
 #include <Scene/Quaterion.hpp>
 
 namespace dt {
-    Quaternion::Quaternion() : mX(.0f), mY(.0f), mZ(.0f), mW(.0f) {}
+    Quaternion::Quaternion() : mW(.0f), mX(.0f), mY(.0f), mZ(.0f) {}
 
-    Quaternion::Quaternion(const float x, const float y, const float z, const float w)
-        : mX(x),
-          mY(y),
-          mZ(z),
-          mW(w) {}
+    Quaternion::Quaternion(const float w, const float x, const float y, const float z)
+        : mW(w),
+        mX(x),
+        mY(y),
+        mZ(z) {}
 
     Quaternion::Quaternion(const Quaternion &other)
-        : mX(other.mX),
-          mY(other.mY),
-          mZ(other.mZ),
-          mW(other.mW) {}
+        : mW(other.mW),
+        mX(other.mX),
+        mY(other.mY),
+        mZ(other.mZ) {}
 
     Quaternion::Quaternion(const Ogre::Quaternion &ogre_quaternion)
-        : mX(ogre_quaternion.x),
-          mY(ogre_quaternion.y),
-          mZ(ogre_quaternion.z),
-          mW(ogre_quaternion.w) {}
+        : mW(ogre_quaternion.w),
+        mX(ogre_quaternion.x),
+        mY(ogre_quaternion.y),
+        mZ(ogre_quaternion.z) {}
 
     Ogre::Quaternion Quaternion::getOgreQuaternion() const
     {
         return Ogre::Quaternion(mW, mX, mY, mZ);
     }
+
+    const Quaternion Quaternion::ZERO(0.0f, 0.0f, 0.0f, 0.0f);
+    const Quaternion Quaternion::IDENTITY(1.0f, 0.0f, 0.0f, 0.0f);
 
     inline float Quaternion::operator [] (const uint32_t i) const
     {
@@ -48,21 +51,21 @@ namespace dt {
 
     inline Quaternion& Quaternion::operator = (const Quaternion &other)
     {
+        mW = other.mW;
         mX = other.mX;
         mY = other.mY;
         mZ = other.mZ;
-        mW = other.mW;
         return *this;
     }
 
     inline Quaternion Quaternion::operator + (const Quaternion &other) const
     {
-        return Quaternion(mX + other.mX, mY + other.mY, mZ + other.mZ, mW + other.mW);
+        return Quaternion(mW + other.mW, mX + other.mX, mY + other.mY, mZ + other.mZ);
     }
 
     inline Quaternion Quaternion::operator - (const Quaternion &other) const
     {
-        return Quaternion(mX - other.mX, mY - other.mY, mZ - other.mZ, mW - other.mW);
+        return Quaternion(mW - other.mW, mX - other.mX, mY - other.mY, mZ - other.mZ);
     }
 
     inline Quaternion Quaternion::operator * (const Quaternion &other) const
@@ -77,18 +80,18 @@ namespace dt {
 
     inline Quaternion Quaternion::operator * (const float scalar) const
     {
-        return Quaternion(mX * scalar, mY * scalar, mZ * scalar, mW * scalar);
+        return Quaternion(mW * scalar, mX * scalar, mY * scalar, mZ * scalar);
     }
 
     inline Quaternion Quaternion::operator- () const
     {
-        return Quaternion(-mX, -mY, -mZ, -mW);
+        return Quaternion(-mW, -mX, -mY, -mZ);
     }
 
     inline bool Quaternion::operator== (const Quaternion &rhs) const
     {
-        return (rhs.mX == mX) && (rhs.mY == mY) &&
-            (rhs.mZ == mZ) && (rhs.mW == mW);
+        return (rhs.mW == mW) && (rhs.mX == mX) &&
+            (rhs.mY == mY) && (rhs.mZ == mZ);
     }
 
     inline bool Quaternion::operator!= (const Quaternion &rhs) const
@@ -109,26 +112,26 @@ namespace dt {
         return v + uv + uuv;
     }
 
-    inline float Quaternion::getW() { return mW; }
-    inline float Quaternion::getX() { return mX; }
-    inline float Quaternion::getY() { return mY; }
-    inline float Quaternion::getZ() { return mZ; }
-    inline void Quaternion::setW(const float w) { mW = w; }
-    inline void Quaternion::setX(const float x) { mX = x; }
-    inline void Quaternion::setY(const float y) { mY = y; }
-    inline void Quaternion::setZ(const float z) { mZ = z; }
+    float Quaternion::getW() { return mW; }
+    float Quaternion::getX() { return mX; }
+    float Quaternion::getY() { return mY; }
+    float Quaternion::getZ() { return mZ; }
+    void Quaternion::setW(const float w) { mW = w; }
+    void Quaternion::setX(const float x) { mX = x; }
+    void Quaternion::setY(const float y) { mY = y; }
+    void Quaternion::setZ(const float z) { mZ = z; }
 
     void Quaternion::swap(Quaternion &other)
     {
+        std::swap(mW, other.mW);
         std::swap(mX, other.mX);
         std::swap(mY, other.mY);
         std::swap(mZ, other.mZ);
-        std::swap(mW, other.mW);
     }
 
     float Quaternion::dotProduct(const Quaternion &other) const
     {
-        return mX * other.mX + mY * other.mY + mZ * other.mZ + mW * other.mW;
+        return mW * other.mW + mX * other.mX + mY * other.mY + mZ * other.mZ;
     }
 
     Quaternion Quaternion::crossProduct(const Quaternion &other) const
@@ -138,12 +141,12 @@ namespace dt {
 
     float Quaternion::getLength() const
     {
-        return sqrt(mX * mX + mY * mY + mZ * mZ + mW * mW);
+        return sqrt(mW * mW + mX * mX + mY * mY + mZ * mZ);
     }
 
     float Quaternion::normalise()
     {
-        float length = sqrt(mX * mX + mY * mY + mZ * mZ + mW * mW);
+        float length = sqrt(mW * mW + mX * mX + mY * mY + mZ * mZ);
         if (length != 0)
         {
             (*this) = (*this) * (1.0f / length);
