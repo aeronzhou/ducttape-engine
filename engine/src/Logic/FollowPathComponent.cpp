@@ -24,7 +24,7 @@ FollowPathComponent::FollowPathComponent(Mode mode, const QString name)
       mMode(mode) {}
 
 void FollowPathComponent::onInitialize() {
-    mLastPoint = mNode->getPosition();
+    mLastPoint = mNode->getPosition().getOgreVector3();
 }
 
 void FollowPathComponent::onDeinitialize() {}
@@ -43,7 +43,7 @@ void FollowPathComponent::onUpdate(double time_diff) {
 
     if(mFollowRotation && time_diff > 0) {
         mNode->lookAt(mLastPoint, Ogre::Vector3::NEGATIVE_UNIT_Z); // look backwards at the point we were
-        mLastPoint = mNode->getPosition();
+        mLastPoint = mNode->getPosition().getOgreVector3();
     }
 
     if(mDurationSinceStart > mTotalDuration || mDurationSinceStart < 0) {
@@ -110,7 +110,7 @@ void FollowPathComponent::reset() {
 Ogre::Vector3 FollowPathComponent::_calculatePosition() {
     if(mPoints.size() == 0) {
         if(mNode != nullptr)
-            return mNode->getPosition();
+            return mNode->getPosition().getOgreVector3();
         else
             return Ogre::Vector3::ZERO;
     }

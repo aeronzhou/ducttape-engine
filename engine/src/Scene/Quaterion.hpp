@@ -27,7 +27,7 @@ namespace dt {
     /**
       * A class to hold a 4-dimensional vector.
       */
-    class Quaternion : public QObject, IMPLEMENTS IScriptable {
+    class Quaternion : public QObject, public IScriptable {
         Q_OBJECT
         Q_PROPERTY(float w READ getW WRITE setW)
         Q_PROPERTY(float x READ getX WRITE setX)
@@ -69,6 +69,10 @@ namespace dt {
           */
         Ogre::Quaternion getOgreQuaternion() const;
 
+        // special values
+        static const Quaternion ZERO;
+        static const Quaternion IDENTITY;
+
 #pragma region operator_override
         float operator [] (const uint32_t i) const;
         float& operator [] (const uint32_t i);
@@ -81,6 +85,19 @@ namespace dt {
         bool operator== (const Quaternion &rhs) const;
         bool operator!= (const Quaternion &rhs) const;
         Vector3 operator * (const Vector3 &vec) const;
+
+        inline friend std::ostream& operator <<
+            ( std::ostream& o, const Quaternion& q )
+        {
+            o << q.mW << " " << q.mX << " " << q.mY << " " << q.mZ;
+            return o;
+        }
+        inline friend std::istream& operator >>
+            ( std::istream& i, Quaternion& q )
+        {
+            i >> q.mW >> q.mX >> q.mY >> q.mZ;
+            return i;
+        }
 #pragma endregion
 
         /**

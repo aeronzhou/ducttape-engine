@@ -12,12 +12,14 @@
 #include <Config.hpp>
 
 #include <Scene/Component.hpp>
+#include <Scene/Vector3.hpp>
+#include <Scene/Quaterion.hpp>
 #include <Utils/Logger.hpp>
 #include <Utils/Utils.hpp>
 #include <Network/IOPacket.hpp>
 
-#include <OgreQuaternion.h>
-#include <OgreVector3.h>
+//#include <OgreQuaternion.h>
+//#include <OgreVector3.h>
 
 #include <QObject>
 #include <QString>
@@ -36,7 +38,7 @@ class Scene;
   * its behaviour, e.g. the look or events.
   * @see Component
   */
-class DUCTTAPE_API Node : public QObject, IMPLEMENTS IScriptable {
+class DUCTTAPE_API Node : public QObject, public IScriptable {
     Q_OBJECT
     Q_ENUMS(RelativeTo)
 
@@ -141,28 +143,28 @@ public:
       * @param rel Reference point.
       * @returns The Node position.
       */
-    Ogre::Vector3 getPosition(RelativeTo rel = PARENT) const;
+    Vector3 getPosition(RelativeTo rel = PARENT) const;
 
     /**
       * Sets the position of the Node.
       * @param position The new position of the Node.
       * @param rel Reference point.
       */
-    void setPosition(Ogre::Vector3 position, RelativeTo rel = PARENT);
+    void setPosition(Vector3 position, RelativeTo rel = PARENT);
 
     /**
       * Returns the scale of the Node.
       * @param rel Reference scale.
       * @returns The scale of the Node
       */
-    Ogre::Vector3 getScale(RelativeTo rel = PARENT) const;
+    Vector3 getScale(RelativeTo rel = PARENT) const;
 
     /**
       * Sets the scale of the Node.
       * @param scale The new scale.
       * @param rel Reference scale.
       */
-    void setScale(Ogre::Vector3 scale, RelativeTo rel = PARENT);
+    void setScale(Vector3 scale, RelativeTo rel = PARENT);
 
     /**
       * Sets the scale of the Node.
@@ -176,21 +178,21 @@ public:
       * @param rel Reference rotation.
       * @returns The Rotation of the Node.
       */
-    Ogre::Quaternion getRotation(RelativeTo rel = PARENT) const;
+    Quaternion getRotation(RelativeTo rel = PARENT) const;
 
     /**
       * Sets the rotation of the Node.
       * @param rotation The rotation to set.
       * @param rel Reference rotation.
       */
-    void setRotation(Ogre::Quaternion rotation, RelativeTo rel = PARENT);
+    void setRotation(Quaternion rotation, RelativeTo rel = PARENT);
 
     /**
       * Sets the direction the Node is facing.
       * @param direction The direction the Node is facing.
       * @param front_vector The local direction that specifies the front of the Node (which part of the Node should be facing into the direction).
       */
-    void setDirection(Ogre::Vector3 direction, Ogre::Vector3 front_vector = Ogre::Vector3::UNIT_Z);
+    void setDirection(Vector3 direction, Vector3 front_vector = Vector3::UNIT_Z);
 
     /**
       * Rotates the node to look at the target.
@@ -198,7 +200,7 @@ public:
       * @param front_vector The local direction that specifies the front of the Node (which part of the Node should be facing into the direction).
       * @param rel Reference position.
       */
-    void lookAt(Ogre::Vector3 target, Ogre::Vector3 front_vector = Ogre::Vector3::UNIT_Z, RelativeTo rel = PARENT);
+    void lookAt(Vector3 target, Vector3 front_vector = Vector3::UNIT_Z, RelativeTo rel = PARENT);
 
     /**
       * Sets the parent Node pointer.
@@ -333,6 +335,8 @@ public slots:
       */
     void setPosition(float x, float y, float z, RelativeTo rel = PARENT);
 
+    QScriptValue scriptGetPosition();
+
     /**
       * Sets the death mark to true. Then the node will be kill when it updates.
       */
@@ -386,9 +390,9 @@ protected:
 
 private:
     std::map<QString, NodeSP> mChildren;  //!< List of child nodes.
-    Ogre::Vector3 mPosition;              //!< The Node position.
-    Ogre::Vector3 mScale;                 //!< The Node scale.
-    Ogre::Quaternion mRotation;           //!< The Node rotation.
+    Vector3 mPosition;                    //!< The Node position.
+    Vector3 mScale;                       //!< The Node scale.
+    Quaternion mRotation;                 //!< The Node rotation.
     Node* mParent;                        //!< A pointer to the parent Node.
     bool mIsUpdatingAfterChange;          //!< Whether the node is just in the process of updating all components after a change occurred. This is to prevent infinite stack loops.
     QUuid mId;                            //!< The node's uuid.

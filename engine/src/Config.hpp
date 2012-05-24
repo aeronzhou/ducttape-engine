@@ -6,6 +6,8 @@
 // http://www.gnu.org/licenses/lgpl.html
 // ----------------------------------------------------------------------------
 
+
+
 #ifndef DUCTTAPE_ENGINE_CONFIG
 #define DUCTTAPE_ENGINE_CONFIG
 
@@ -19,9 +21,6 @@
 
 // Makes interface available for C++
 // Refers to http://www.codeguru.com/cpp/cpp/cpp_mfc/oop/article.php/c9989/Using-Interfaces-in-C.htm
-#ifndef IMPLEMENTS
-#define IMPLEMENTS public
-#endif
 
 #ifdef _MSC_VER
 #define INTERFACE(name) __interface actual_##name {
