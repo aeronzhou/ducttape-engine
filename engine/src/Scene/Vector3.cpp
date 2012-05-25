@@ -58,6 +58,14 @@ namespace dt {
         return mX * other.mX + mY * other.mY + mZ * other.mZ;
     }
 
+    bool Vector3::operator == (const Vector3& other) const {
+        return mX == other.mX && mY == other.mY && mZ == other.mZ;
+    }
+
+    bool Vector3::operator != (const Vector3& other) const {
+        return mX != other.mX || mY != other.mY || mZ != other.mZ;
+    }
+
     Vector3 Vector3::crossProduct(const Vector3& other) const {
         Vector3 vec;
         vec.mX = mY * other.mZ - mZ * other.mY;
@@ -117,10 +125,10 @@ namespace dt {
         return this->crossProduct(multiplier);
     }
 
-    Vector3 Vector3::operator = (const Vector3 &v) {
-        mX = v.mX;
-        mY = v.mY;
-        mZ = v.mZ;
+    Vector3 Vector3::operator = (const Vector3& other) {
+        mX = other.mX;
+        mY = other.mY;
+        mZ = other.mZ;
         return *this;
     }
 

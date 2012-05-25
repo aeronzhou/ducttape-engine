@@ -36,8 +36,8 @@ AdvancedPlayerComponent::AdvancedPlayerComponent(const QString name)
 void AdvancedPlayerComponent::onInitialize() {
     btTransform  start_trans;
     start_trans.setIdentity();
-    start_trans.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
-    start_trans.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
+    start_trans.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE).getOgreVector3()));
+    start_trans.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE).getOgreQuaternion()));
 
     btScalar character_height = 1.75;
     btScalar character_width = 0.44;
@@ -100,8 +100,8 @@ void AdvancedPlayerComponent::onEnable() {
     //Re-sychronize it.
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
-    transform.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
+    transform.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE).getOgreVector3()));
+    transform.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE).getOgreQuaternion()));
 
     mBtGhostObject->setWorldTransform(transform);
     getNode()->getScene()->getPhysicsWorld()->getBulletWorld()->addCollisionObject(mBtGhostObject.get());
@@ -119,7 +119,7 @@ void AdvancedPlayerComponent::onUpdate(double time_diff) {
     static Ogre::Quaternion quaternion;
     static btTransform trans;
 
-    quaternion = Ogre::Quaternion(getNode()->getRotation().getYaw(), Ogre::Vector3(0.0, 1.0, 0.0));
+    quaternion = Ogre::Quaternion(Ogre::Radian(getNode()->getRotation().getYaw()), Ogre::Vector3(0.0, 1.0, 0.0));
     move = quaternion * BtOgre::Convert::toOgre(mMove);
     move.normalise();
     move *= mMoveSpeed;
@@ -254,7 +254,7 @@ void AdvancedPlayerComponent::_handleMouseMove(const OIS::MouseEvent& event) {
             // watch out for da gimbal lock !!
 
             Ogre::Matrix3 orientMatrix;
-            getNode()->getRotation().ToRotationMatrix(orientMatrix);
+            getNode()->getRotation().getOgreQuaternion().ToRotationMatrix(orientMatrix);
 
             Ogre::Radian yaw, pitch, roll;
             orientMatrix.ToEulerAnglesYXZ(yaw, pitch, roll);

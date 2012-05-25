@@ -145,20 +145,52 @@ namespace dt {
 
         Vector3 operator * (const Vector3& multiplier) const;
 
-        Vector3 operator = (const Vector3 &v);
+        Vector3 operator = (const Vector3& other);
 
-        inline friend std::ostream& operator <<
+        bool operator == (const Vector3& other) const;
+
+        bool operator != (const Vector3& other) const;
+
+        inline DUCTTAPE_API friend std::ostream& operator <<
             ( std::ostream& o, const Vector3& v )
         {
             o << v.mX << " " << v.mY << " " << v.mZ;
             return o;
         }
-        inline friend std::istream& operator >>
+
+        inline DUCTTAPE_API friend std::istream& operator >>
             ( std::istream& i, Vector3& v )
         {
             i >> v.mX >> v.mY >> v.mZ;
             return i;
         }
+
+        inline DUCTTAPE_API friend sf::Packet& operator >>
+            ( sf::Packet& i, Vector3& v )
+        {
+            i >> v.mX >> v.mY >> v.mZ;
+            return i;
+        }
+
+        inline DUCTTAPE_API friend sf::Packet& operator <<
+            ( sf::Packet& o, const Vector3& v )
+        {
+            o << v.mX << v.mY << v.mZ;
+            return o;
+        }
+
+        inline DUCTTAPE_API friend const YAML::Node& operator >> (const YAML::Node& node, Vector3& v) {
+            node[0] >> v.mX;
+            node[1] >> v.mY;
+            node[2] >> v.mZ;
+            return node;
+        }
+
+        inline DUCTTAPE_API friend YAML::Emitter& operator << (YAML::Emitter& emitter, Vector3& v) {
+            emitter << YAML::Flow << YAML::BeginSeq << v.mX << v.mY << v.mZ << YAML::EndSeq;
+            return emitter;
+        }
+
     public slots:
         /**
           * Normalises the Vector3.

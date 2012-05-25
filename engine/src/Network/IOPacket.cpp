@@ -134,7 +134,6 @@ void IOPacket::endObject() {
     }
 }
 
-
 sf::Packet& operator >> (sf::Packet& packet, Ogre::Vector3& v) {
     packet >> v.x >> v.y >> v.z;
     return packet;

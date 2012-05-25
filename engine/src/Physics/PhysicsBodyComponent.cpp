@@ -74,8 +74,8 @@ void PhysicsBodyComponent::onInitialize() {
         mCollisionShape->calculateLocalInertia(mMass, inertia);
 
     btDefaultMotionState* state = new btDefaultMotionState(
-        btTransform(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)),
-        BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE))));
+        btTransform(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE).getOgreQuaternion()),
+        BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE).getOgreVector3())));
 
     //Here's the most tricky part. You need to give it 5.0 as its temporary mass.
     //Or you will find your player character keeps falling down no matter there's a ground.
@@ -110,8 +110,8 @@ void PhysicsBodyComponent::onEnable() {
 
     //Re-sychronize the PhysicsBodyComponent with the node.
     btDefaultMotionState* state = new btDefaultMotionState(
-        btTransform(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)),
-        BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE))));
+        btTransform(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE).getOgreQuaternion()),
+        BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE).getOgreVector3())));
     mBody->setMotionState(state);
 
     setMass(mMass);

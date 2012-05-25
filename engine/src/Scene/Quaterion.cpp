@@ -17,13 +17,13 @@ namespace dt {
         mY(y),
         mZ(z) {}
 
-    Quaternion::Quaternion(const Quaternion &other)
+    Quaternion::Quaternion(const Quaternion& other)
         : mW(other.mW),
         mX(other.mX),
         mY(other.mY),
         mZ(other.mZ) {}
 
-    Quaternion::Quaternion(const Ogre::Quaternion &ogre_quaternion)
+    Quaternion::Quaternion(const Ogre::Quaternion& ogre_quaternion)
         : mW(ogre_quaternion.w),
         mX(ogre_quaternion.x),
         mY(ogre_quaternion.y),
@@ -49,7 +49,7 @@ namespace dt {
         return *(&mW+i);
     }
 
-    inline Quaternion& Quaternion::operator = (const Quaternion &other)
+    inline Quaternion& Quaternion::operator = (const Quaternion& other)
     {
         mW = other.mW;
         mX = other.mX;
@@ -58,17 +58,17 @@ namespace dt {
         return *this;
     }
 
-    inline Quaternion Quaternion::operator + (const Quaternion &other) const
+    inline Quaternion Quaternion::operator + (const Quaternion& other) const
     {
         return Quaternion(mW + other.mW, mX + other.mX, mY + other.mY, mZ + other.mZ);
     }
 
-    inline Quaternion Quaternion::operator - (const Quaternion &other) const
+    inline Quaternion Quaternion::operator - (const Quaternion& other) const
     {
         return Quaternion(mW - other.mW, mX - other.mX, mY - other.mY, mZ - other.mZ);
     }
 
-    inline Quaternion Quaternion::operator * (const Quaternion &other) const
+    inline Quaternion Quaternion::operator * (const Quaternion& other) const
     {
         return Quaternion(
             mW * other.mW - mX * other.mX - mY * other.mY - mZ * other.mZ,
@@ -83,23 +83,23 @@ namespace dt {
         return Quaternion(mW * scalar, mX * scalar, mY * scalar, mZ * scalar);
     }
 
-    inline Quaternion Quaternion::operator- () const
+    Quaternion Quaternion::operator- () const
     {
         return Quaternion(-mW, -mX, -mY, -mZ);
     }
 
-    inline bool Quaternion::operator== (const Quaternion &rhs) const
+    inline bool Quaternion::operator== (const Quaternion& rhs) const
     {
         return (rhs.mW == mW) && (rhs.mX == mX) &&
             (rhs.mY == mY) && (rhs.mZ == mZ);
     }
 
-    inline bool Quaternion::operator!= (const Quaternion &rhs) const
+    inline bool Quaternion::operator!= (const Quaternion& rhs) const
     {
         return !operator==(rhs);
     }
 
-    Vector3 Quaternion::operator * (const Vector3 &v) const
+    Vector3 Quaternion::operator * (const Vector3& v) const
     {
         // nVidia SDK implementation
         Vector3 uv, uuv;
@@ -112,16 +112,16 @@ namespace dt {
         return v + uv + uuv;
     }
 
-    float Quaternion::getW() { return mW; }
-    float Quaternion::getX() { return mX; }
-    float Quaternion::getY() { return mY; }
-    float Quaternion::getZ() { return mZ; }
+    float Quaternion::getW() const { return mW; }
+    float Quaternion::getX() const { return mX; }
+    float Quaternion::getY() const { return mY; }
+    float Quaternion::getZ() const { return mZ; }
     void Quaternion::setW(const float w) { mW = w; }
     void Quaternion::setX(const float x) { mX = x; }
     void Quaternion::setY(const float y) { mY = y; }
     void Quaternion::setZ(const float z) { mZ = z; }
 
-    void Quaternion::swap(Quaternion &other)
+    void Quaternion::swap(Quaternion& other)
     {
         std::swap(mW, other.mW);
         std::swap(mX, other.mX);
@@ -129,12 +129,12 @@ namespace dt {
         std::swap(mZ, other.mZ);
     }
 
-    float Quaternion::dotProduct(const Quaternion &other) const
+    float Quaternion::dotProduct(const Quaternion& other) const
     {
         return mW * other.mW + mX * other.mX + mY * other.mY + mZ * other.mZ;
     }
 
-    Quaternion Quaternion::crossProduct(const Quaternion &other) const
+    Quaternion Quaternion::crossProduct(const Quaternion& other) const
     {
         return (*this) * other;
     }
@@ -169,7 +169,7 @@ namespace dt {
         return asinf(-2 * (mX * mZ - mW * mY));
     }
 
-    void Quaternion::fromAngleAxis(const float &angle, const Vector3 &axis)
+    void Quaternion::fromAngleAxis(const float angle, const Vector3& axis)
     {
         // from Ogre
         float halfAngle = 0.5f * angle;
@@ -180,7 +180,7 @@ namespace dt {
         mZ = sin * axis.getZ();
     }
 
-    void Quaternion::toAngleAxis(float &angle, Vector3 &axis) const
+    void Quaternion::toAngleAxis(float& angle, Vector3& axis) const
     {
         // from Ogre
         float sqrLength = mX * mX + mY * mY + mZ * mZ;
@@ -274,7 +274,7 @@ namespace dt {
         }
     }
 
-    void Quaternion::scriptToAngleAxis(float &angle, QScriptValue &axis) const
+    void Quaternion::scriptToAngleAxis(float& angle, QScriptValue& axis) const
     {
         if(axis.isQObject()) {
             Vector3* p_qua = (Vector3*)axis.toQObject();

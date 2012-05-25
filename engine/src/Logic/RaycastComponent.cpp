@@ -18,10 +18,14 @@ namespace dt {
 RaycastComponent::RaycastComponent(const QString name)
     : InteractionComponent(name) {}
 
-void RaycastComponent::onCheck(const btVector3& start, const btVector3& end) {
-    btCollisionWorld::ClosestRayResultCallback raycast_callback(start, end);
+void RaycastComponent::onCheck(const Vector3& start, const Vector3& end) {
+    btVector3 bt_start, bt_end;
+    bt_start = BtOgre::Convert::toBullet(start.getOgreVector3());
+    bt_end = BtOgre::Convert::toBullet(end.getOgreVector3());
 
-    getNode()->getScene()->getPhysicsWorld()->getBulletWorld()->rayTest(start, end, raycast_callback);
+    btCollisionWorld::ClosestRayResultCallback raycast_callback(bt_start, bt_end);
+
+    getNode()->getScene()->getPhysicsWorld()->getBulletWorld()->rayTest(bt_start, bt_end, raycast_callback);
 
     if(raycast_callback.hasHit()) {
         btCollisionObject* collision_object = raycast_callback.m_collisionObject;

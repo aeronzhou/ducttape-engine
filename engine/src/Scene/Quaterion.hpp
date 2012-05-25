@@ -46,7 +46,7 @@ namespace dt {
         /**
           * Copy constructor. (to avoid inaccessibility of QObject copy constructor)
           */
-        Quaternion(const Quaternion &other);
+        Quaternion(const Quaternion& other);
 
         /**
           * Uses the given x, y, z, w value to construct a Quaternion.
@@ -61,7 +61,7 @@ namespace dt {
           * Uses the given Ogre Quaternion to construct a Quaternion.
           * @param ogre_quaternion The Ogre Quaternion.
           */
-        Quaternion(const Ogre::Quaternion &ogre_quaternion);
+        Quaternion(const Ogre::Quaternion& ogre_quaternion);
 
         /**
           * Convert this Quaternion to an Ogre Quaternion.
@@ -76,49 +76,78 @@ namespace dt {
 #pragma region operator_override
         float operator [] (const uint32_t i) const;
         float& operator [] (const uint32_t i);
-        Quaternion& operator = (const Quaternion &other);
-        Quaternion operator + (const Quaternion &other) const;
-        Quaternion operator - (const Quaternion &other) const;
-        Quaternion operator * (const Quaternion &other) const;
+        Quaternion& operator = (const Quaternion& other);
+        Quaternion operator + (const Quaternion& other) const;
+        Quaternion operator - (const Quaternion& other) const;
+        Quaternion operator * (const Quaternion& other) const;
         Quaternion operator * (const float scalar) const;
         Quaternion operator- () const;
-        bool operator== (const Quaternion &rhs) const;
-        bool operator!= (const Quaternion &rhs) const;
-        Vector3 operator * (const Vector3 &vec) const;
+        bool operator== (const Quaternion& rhs) const;
+        bool operator!= (const Quaternion& rhs) const;
+        Vector3 operator * (const Vector3& vec) const;
 
-        inline friend std::ostream& operator <<
+        inline DUCTTAPE_API friend std::ostream& operator <<
             ( std::ostream& o, const Quaternion& q )
         {
             o << q.mW << " " << q.mX << " " << q.mY << " " << q.mZ;
             return o;
         }
-        inline friend std::istream& operator >>
+
+        inline DUCTTAPE_API friend std::istream& operator >>
             ( std::istream& i, Quaternion& q )
         {
             i >> q.mW >> q.mX >> q.mY >> q.mZ;
             return i;
         }
+
+        inline DUCTTAPE_API friend sf::Packet& operator >>
+            ( sf::Packet& i, Quaternion& q )
+        {
+            i >> q.mW >> q.mX >> q.mY >> q.mZ;
+            return i;
+        }
+
+        inline DUCTTAPE_API friend sf::Packet& operator <<
+            ( sf::Packet& o, const Quaternion& q )
+        {
+            o << q.mW << q.mX << q.mY << q.mZ;
+            return o;
+        }
+
+        inline DUCTTAPE_API friend const YAML::Node& operator >> (const YAML::Node& node, Quaternion& q) {
+            node[0] >> q.mW;
+            node[1] >> q.mX;
+            node[2] >> q.mY;
+            node[3] >> q.mZ;
+            return node;
+        }
+
+        inline DUCTTAPE_API friend YAML::Emitter& operator << (YAML::Emitter& emitter, Quaternion& q) {
+            emitter << YAML::Flow << YAML::BeginSeq << q.mW << q.mX << q.mY << q.mZ << YAML::EndSeq;
+            return emitter;
+        }
+
 #pragma endregion
 
         /**
           * Swaps two the value of two quaternion.
           * @param other The other Quaternion.
           */
-        void swap(Quaternion &other);
+        void swap(Quaternion& other);
 
         /**
           * Dot product of two quaternion.
           * @param other The other Quaternion.
           * @returns The result of dot product.
           */
-        float dotProduct(const Quaternion &other) const;
+        float dotProduct(const Quaternion& other) const;
 
         /**
           * Cross product of two quaternion.
           * @param other The other Quaternion.
           * @returns The result of cross product.
           */
-        Quaternion crossProduct(const Quaternion &other) const;
+        Quaternion crossProduct(const Quaternion& other) const;
 
         /**
           * Returns a QtScript object.
@@ -134,25 +163,25 @@ namespace dt {
           * Gets the w value of this Quaternion.
           * @returns The w value.
           */
-        float getW();
+        float getW() const;
 
         /**
           * Gets the x value of this Quaternion.
           * @returns The x value.
           */
-        float getX();
+        float getX() const;
 
         /**
           * Gets the y value of this Quaternion.
           * @returns The y value.
           */
-        float getY();
+        float getY() const;
 
         /**
           * Gets the z value of this Quaternion.
           * @returns The z value.
           */
-        float getZ();
+        float getZ() const;
 
         /**
           * Sets the w value of this Quaternion.
@@ -214,14 +243,14 @@ namespace dt {
           * @param angle Angle to rotate.
           * @param axis Axis to rotate around.
           */
-        void fromAngleAxis(const float &angle, const Vector3 &axis);
+        void fromAngleAxis(const float angle, const Vector3& axis);
 
         /**
           * Construct angle and axis from quaternion.
           * @param angle Angle to rotate.
           * @param axis Axis to rotate around.
           */
-        void toAngleAxis(float &angle, Vector3 &axis) const;
+        void toAngleAxis(float& angle, Vector3& axis) const;
 
 #pragma region script_function
         /**
@@ -256,7 +285,7 @@ namespace dt {
           * @param angle Angle to rotate.
           * @param axis Axis to rotate around.
           */
-        void scriptToAngleAxis(float &angle, QScriptValue &axis) const;
+        void scriptToAngleAxis(float& angle, QScriptValue& axis) const;
 
         /**
           * Adds this Quaternion with another Quaternion. For script use.
@@ -277,7 +306,7 @@ namespace dt {
           * @param scalar The scalar.
           * @returns The result.
           */
-        QScriptValue scriptScale(float scalar) const;
+        QScriptValue scriptScale(const float scalar) const;
 #pragma endregion
 
     private:

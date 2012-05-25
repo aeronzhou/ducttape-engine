@@ -57,9 +57,9 @@ void LightComponent::onDisable() {
 }
 
 void LightComponent::onUpdate(double time_diff) {
-    mSceneNode->setPosition(getNode()->getPosition(Node::SCENE));
-    mSceneNode->setOrientation(getNode()->getRotation(Node::SCENE));
-    mSceneNode->setScale(getNode()->getScale(Node::SCENE));
+    mSceneNode->setPosition(getNode()->getPosition(Node::SCENE).getOgreVector3());
+    mSceneNode->setOrientation(getNode()->getRotation(Node::SCENE).getOgreQuaternion());
+    mSceneNode->setScale(getNode()->getScale(Node::SCENE).getOgreVector3());
 }
 
 void LightComponent::setColor(const Ogre::ColourValue color) {

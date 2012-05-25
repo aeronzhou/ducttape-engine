@@ -43,8 +43,8 @@ public:
 
 private:
     double mRuntime;
-    Ogre::Vector3 mSphere1DisabledPosition;
-    Ogre::Vector3 mSphere2DisabledPosition;
+    dt::Vector3 mSphere1DisabledPosition;
+    dt::Vector3 mSphere2DisabledPosition;
 
 };
 
