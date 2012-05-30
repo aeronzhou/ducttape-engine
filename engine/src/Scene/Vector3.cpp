@@ -9,23 +9,25 @@
 #include <Scene/Vector3.hpp>
 
 namespace dt {
-    Vector3::Vector3() : mX(0.0f), mY(0.0f), mZ(0.0f) {}
+    /*Vector3::Vector3() : mX(0.0f), mY(0.0f), mZ(0.0f), mOgreVector3(mX, mY, mZ) {}
 
-    Vector3::Vector3(const Vector3 &other) : mX(other.mX), mY(other.mY), mZ(other.mZ) {}
+    Vector3::Vector3(const Vector3 &other) : mX(other.mX), mY(other.mY), mZ(other.mZ), mOgreVector3(other.mX, other.mY, other.mZ) {}
 
     Vector3::Vector3(const float x, const float y, const float z)
         : mX(x),
           mY(y),
-          mZ(z) {}
+          mZ(z),
+          mOgreVector3(x, y, z) {}
 
     Vector3::Vector3(const Ogre::Vector3& ogre_vector)
         : mX(ogre_vector.x),
           mY(ogre_vector.y),
-          mZ(ogre_vector.z) {}
+          mZ(ogre_vector.z),
+          mOgreVector3(ogre_vector) {}
 
     Ogre::Vector3 Vector3::getOgreVector3() const {
-        return Ogre::Vector3(mX, mY, mZ);
-    }
+        return mOgreVector3;
+    }*/
 
     const Vector3 Vector3::ZERO( 0, 0, 0 );
     const Vector3 Vector3::UNIT_X( 1, 0, 0 );
@@ -37,7 +39,7 @@ namespace dt {
     const Vector3 Vector3::UNIT_SCALE(1, 1, 1);
 
     void Vector3::swap(Vector3& other) {
-        float x = other.mX;
+        /*float x = other.mX;
         float y = other.mY;
         float z = other.mZ;
 
@@ -45,34 +47,48 @@ namespace dt {
         other.mY = mY;
         other.mZ = mZ;
 
+        other.mOgreVector3.x = other.mX;
+        other.mOgreVector3.y = other.mY;
+        other.mOgreVector3.z = other.mZ;
+
         mX = x;
         mY = y;
         mZ = z;
+
+        mOgreVector3.x = mX;
+        mOgreVector3.y = mY;
+        mOgreVector3.z = mZ;*/
+        mOgreVector3.swap(other.mOgreVector3);
     }
 
     float Vector3::getDistance(const Vector3& other) const {
-        return sqrt((mX - other.mX) * (mX - other.mX) + (mY - other.mY) * (mY - other.mY) + (mZ - other.mZ) * (mZ - other.mZ));
+        return mOgreVector3.distance(other.mOgreVector3);
+        //return sqrt((mX - other.mX) * (mX - other.mX) + (mY - other.mY) * (mY - other.mY) + (mZ - other.mZ) * (mZ - other.mZ));
     }
 
     float Vector3::dotProduct(const Vector3& other) const {
-        return mX * other.mX + mY * other.mY + mZ * other.mZ;
+        return mOgreVector3.dotProduct(other.mOgreVector3);
+        //return mX * other.mX + mY * other.mY + mZ * other.mZ;
     }
 
     bool Vector3::operator == (const Vector3& other) const {
-        return mX == other.mX && mY == other.mY && mZ == other.mZ;
+        return mOgreVector3 == other.mOgreVector3;
+        //return mX == other.mX && mY == other.mY && mZ == other.mZ;
     }
 
     bool Vector3::operator != (const Vector3& other) const {
-        return mX != other.mX || mY != other.mY || mZ != other.mZ;
+        return mOgreVector3 != other.mOgreVector3;
+        //return mX != other.mX || mY != other.mY || mZ != other.mZ;
     }
 
     Vector3 Vector3::crossProduct(const Vector3& other) const {
-        Vector3 vec;
+        /*Vector3 vec;
         vec.mX = mY * other.mZ - mZ * other.mY;
         vec.mY = mZ * other.mX - mX * other.mZ;
         vec.mZ = mX * other.mY - mY * other.mX;
 
-        return vec;
+        return vec;*/
+        return mOgreVector3.crossProduct(other.mOgreVector3);
     }
 
     QScriptValue Vector3::toQtScriptObject() {
@@ -80,13 +96,14 @@ namespace dt {
     }
 
     Vector3 Vector3::getRandomDeviant(float angle_range) const {
-        Vector3 vec1 = this->crossProduct(Vector3(1.0f, 0.0f, 0.0f));
-        Vector3 vec2 = this->crossProduct(vec1);
-        Vector3 vec3 = *this;
+        //Vector3 vec1 = this->crossProduct(Vector3(1.0f, 0.0f, 0.0f));
+        //Vector3 vec2 = this->crossProduct(vec1);
+        //Vector3 vec3 = *this;
 
-        // TODO: Fill here with rotation operations.
+        //// TODO: Fill here with rotation operations.
 
-        return vec3;
+        //return vec3;
+        return mOgreVector3.randomDeviant(Ogre::Radian(angle_range));
     }
 
     float Vector3::getAngleBetween(const Vector3& other) const {
@@ -106,73 +123,88 @@ namespace dt {
     }
 
     Vector3 Vector3::operator + (const Vector3& other) const {
-        return Vector3(mX + other.mX, mY + other.mY, mZ + other.mZ);
+        return mOgreVector3 + other.mOgreVector3;
+        //return Vector3(mX + other.mX, mY + other.mY, mZ + other.mZ);
     }
 
     Vector3 Vector3::operator - (const Vector3& other) const {
-        return Vector3(mX - other.mX, mY - other.mY, mZ - other.mZ);
+        return mOgreVector3 - other.mOgreVector3;
+        //return Vector3(mX - other.mX, mY - other.mY, mZ - other.mZ);
     }
 
     Vector3 Vector3::operator - () const {
-        return Vector3(-mX, -mY, -mZ);
+        return -mOgreVector3;
+        //return Vector3(-mX, -mY, -mZ);
     }
 
     Vector3 Vector3::operator * (const float multiplier) const {
-        return Vector3(mX * multiplier, mY * multiplier, mZ * multiplier);
+        return mOgreVector3 * multiplier;
+        //return Vector3(mX * multiplier, mY * multiplier, mZ * multiplier);
     }
 
     Vector3 Vector3::operator * (const Vector3& multiplier) const {
-        return this->crossProduct(multiplier);
+        return mOgreVector3 * multiplier.mOgreVector3;
+        //return this->crossProduct(multiplier);
     }
 
     Vector3 Vector3::operator = (const Vector3& other) {
-        mX = other.mX;
+        return mOgreVector3 = other.mOgreVector3;
+        /*mX = other.mX;
         mY = other.mY;
         mZ = other.mZ;
-        return *this;
+        return *this;*/
     }
 
     void Vector3::normalise() {
-        float length = this->getLength();
+        /*float length = this->getLength();
 
         mX /= length;
         mY /= length;
-        mZ /= length;
+        mZ /= length;*/
+        mOgreVector3.normalise();
     }
 
     bool Vector3::isZero() const {
-        return mX == 0.0f && mY == 0.0f && mZ == 0.0f;
+        return mOgreVector3.isZeroLength();
+        //return mX == 0.0f && mY == 0.0f && mZ == 0.0f;
     }
 
     float Vector3::getX() const {
-        return mX;
+        return mOgreVector3.x;
+        //return mX;
     }
 
     float Vector3::getY() const {
-        return mY;
+        return mOgreVector3.y;
+        //return mY;
     }
 
     float Vector3::getZ() const {
-        return mZ;
+        return mOgreVector3.z;
+        //return mZ;
     }
 
     void Vector3::setX(const float x) {
-        if(mX != x)
-            mX = x;
+        mOgreVector3.x = x;
+        /*if(mX != x)
+            mX = x;*/
     }
 
     void Vector3::setY(const float y) {
-        if(mY != y)
-            mY = y;
+        /*if(mY != y)
+            mY = y;*/
+        mOgreVector3.y = y;
     }
 
     void Vector3::setZ(const float z) {
-        if(mZ != z)
-            mZ = z;
+        /*if(mZ != z)
+            mZ = z;*/
+        mOgreVector3.z = z;
     }
 
     float Vector3::getLength() const {
-        return sqrt(mX * mX + mY * mY + mZ * mZ);
+        return mOgreVector3.length();
+        //return sqrt(mX * mX + mY * mY + mZ * mZ);
     }
 
     void Vector3::scriptSwap(QScriptValue other) {

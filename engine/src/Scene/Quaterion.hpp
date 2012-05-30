@@ -41,12 +41,17 @@ namespace dt {
         /**
           * Non-parameter constructor which constructs a Quaternion with (0.0f, 0.0f, 0.0f, 0.0f).
           */
-        Quaternion(void);
+        inline Quaternion(void) : mW(.0f), mX(.0f), mY(.0f), mZ(.0f), mOgreQuaternion(mW, mX, mY, mZ) {}
 
         /**
           * Copy constructor. (to avoid inaccessibility of QObject copy constructor)
           */
-        Quaternion(const Quaternion& other);
+        inline Quaternion(const Quaternion& other)
+            : mW(other.mW),
+              mX(other.mX),
+              mY(other.mY),
+              mZ(other.mZ),
+              mOgreQuaternion(mW, mX, mY, mZ) {}
 
         /**
           * Uses the given x, y, z, w value to construct a Quaternion.
@@ -55,19 +60,31 @@ namespace dt {
           * @param z The z value.
           * @param w The w value.
           */
-        Quaternion(const float x, const float y, const float z, const float w);
+        inline Quaternion(const float x, const float y, const float z, const float w)
+            : mW(w),
+              mX(x),
+              mY(y),
+              mZ(z),
+              mOgreQuaternion(w, x, y, z) {}
 
         /**
           * Uses the given Ogre Quaternion to construct a Quaternion.
           * @param ogre_quaternion The Ogre Quaternion.
           */
-        Quaternion(const Ogre::Quaternion& ogre_quaternion);
+        inline Quaternion(const Ogre::Quaternion& ogre_quaternion)
+            : mW(ogre_quaternion.w),
+              mX(ogre_quaternion.x),
+              mY(ogre_quaternion.y),
+              mZ(ogre_quaternion.z),
+              mOgreQuaternion(ogre_quaternion) {}
 
         /**
           * Convert this Quaternion to an Ogre Quaternion.
           * @returns The Ogre Quaternion.
           */
-        Ogre::Quaternion getOgreQuaternion() const;
+        Ogre::Quaternion inline getOgreQuaternion() const {
+            return mOgreQuaternion;
+        }
 
         // special values
         static const Quaternion ZERO;
@@ -310,6 +327,7 @@ namespace dt {
 #pragma endregion
 
     private:
+        Ogre::Quaternion mOgreQuaternion;
         float mW;         //!< The w value of the Quaternion.
         float mX;         //!< The x value of the Quaternion.
         float mY;         //!< The y value of the Quaternion.

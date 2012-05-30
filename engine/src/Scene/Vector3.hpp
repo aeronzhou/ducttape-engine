@@ -36,12 +36,12 @@ namespace dt {
         /**
           * Non-parameter constructor which constructs a Vector3 with (0.0f, 0.0f, 0.0f).
           */
-        Vector3();
+        inline Vector3() : mX(0.0f), mY(0.0f), mZ(0.0f), mOgreVector3(mX, mY, mZ) {}
 
         /**
           * Copy constructor. (to avoid inaccessibility of QObject copy constructor)
           */
-        Vector3(const Vector3 &other);
+        inline Vector3(const Vector3 &other) : mX(other.mX), mY(other.mY), mZ(other.mZ), mOgreVector3(other.mX, other.mY, other.mZ) {}
 
         /**
           * Uses the given x, y and z value to construct a Vector3.
@@ -49,19 +49,29 @@ namespace dt {
           * @param y The y value.
           * @param z The z value.
           */
-        Vector3(const float x, const float y, const float z);
+        inline Vector3(const float x, const float y, const float z)
+            : mX(x),
+              mY(y),
+              mZ(z),
+              mOgreVector3(x, y, z) {}
 
         /**
           * Uses the given Ogre Vector3 to construct a Vector3.
           * @param ogre_vector The Ogre Vector3.
           */
-        Vector3(const Ogre::Vector3& ogre_vector);
+        inline Vector3(const Ogre::Vector3& ogre_vector)
+            : mX(ogre_vector.x),
+              mY(ogre_vector.y),
+              mZ(ogre_vector.z),
+              mOgreVector3(ogre_vector) {}
 
         /**
           * Convert this Vector3 to an Ogre Vector3.
           * @returns The Ogre Vector3.
           */
-        Ogre::Vector3 getOgreVector3() const;
+        inline Ogre::Vector3 getOgreVector3() const {
+            return mOgreVector3;
+        }
 
         // special values
         static const Vector3 ZERO;
@@ -322,6 +332,7 @@ namespace dt {
         QScriptValue scriptMultiply(float multiplier) const;
 
     private:
+        Ogre::Vector3 mOgreVector3;
         float mX;         //!< The x value of the Vector3.
         float mY;         //!< The y value of the Vector3.
         float mZ;         //!< The z value of the Vector3.
