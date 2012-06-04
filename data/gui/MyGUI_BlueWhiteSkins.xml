@@ -1150,4 +1150,10 @@
             <State name="pushed" colour="0 0 0" shift="0"/>
         </BasisSkin>
     </Resource>
+	<Resource type="ResourceSkin" name="LabelSkin" size="18 17" texture="MyGUI_BlueWhiteSkins.png">
+		<BasisSkin type="SimpleText" offset="0 0 18 17" align="Stretch">
+  		<State name="normal" offset="72 21 18 17" /> 
+  	</BasisSkin>
+  </Resource>
+
 </MyGUI>

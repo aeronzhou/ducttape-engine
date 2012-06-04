@@ -87,13 +87,30 @@ void Main::onInitialize() {
     button4->setPosition(10, 130);
     button4->setSize(200, 30);
     button4->getMyGUIWidget()->eventMouseButtonClick += MyGUI::newDelegate(this, &Main::click);
+
+	auto imageBox1 = win.addChildWidget(new dt::GuiImageBox("imageBox1"));
+	imageBox1->setPosition(10,170);
+	imageBox1->setSize(200,200);
+	imageBox1->setImageTexture("MyGUI_BlueWhiteSkins.png");
+
+    auto label1 = win.addChildWidget(new dt::GuiLabel("label1"));
+    label1->setPosition(150,650);
+    label1->setSize(800,30);
+    label1->setCaption("I used to be an adventurer like you, then I took an arrow in the knee.");
+    label1->setTextColour(MyGUI::Colour(0.0,0.9,0.9));
+
+    auto progressBar1 = win.addChildWidget(new dt::GuiProgressBar("progressBar1"));
+    progressBar1->setPosition(10,410);
+    progressBar1->setSize(200,15);
+    progressBar1->setProgressRange(100);
+    progressBar1->setProgressPosition(30);
 }
 
 void Main::updateStateFrame(double simulation_frame_time) {
     mRuntime += simulation_frame_time;
-    if(mRuntime > 3.0) {
-        dt::StateManager::get()->pop(1);
-    }
+    //if(mRuntime > 3.0) {
+    //    dt::StateManager::get()->pop(1);
+    //}
 }
 
 }

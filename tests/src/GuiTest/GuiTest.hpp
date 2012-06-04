@@ -17,6 +17,9 @@
 #include <Graphics/CameraComponent.hpp>
 #include <Graphics/MeshComponent.hpp>
 #include <Gui/GuiButton.hpp>
+#include <Gui/GuiLabel.hpp>
+#include <Gui/GuiImageBox.hpp>
+#include <Gui/GuiProgressBar.hpp>
 #include <Scene/Game.hpp>
 #include <Scene/Node.hpp>
 #include <Scene/Scene.hpp>
