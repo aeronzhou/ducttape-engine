@@ -278,18 +278,18 @@ void Main::updateStateFrame(double simulation_frame_time) {
     ball->getRigidBody()->setLinearVelocity(speed * speed_value);
 
     // Check for dropping.
-    if (ball->getNode()->getPosition().y < 0.0f) {
+    if (ball->getNode()->getPosition().getY() < 0.0f) {
         resetBall();
     }
 }
 
 void Main::ballCollided(dt::PhysicsBodyComponent* collider, dt::PhysicsBodyComponent* ball)
 {
-    if (ball->getNode()->getPosition().x >= FIELD_WIDTH / 2 - BALL_RADIUS) {
+    if (ball->getNode()->getPosition().getX() >= FIELD_WIDTH / 2 - BALL_RADIUS) {
 		mScore1++;
         resetBall();
 	}
-    else if (ball->getNode()->getPosition().x <= -FIELD_WIDTH / 2 + BALL_RADIUS) {
+    else if (ball->getNode()->getPosition().getX() <= -FIELD_WIDTH / 2 + BALL_RADIUS) {
 		mScore2++;
         resetBall();
 	}

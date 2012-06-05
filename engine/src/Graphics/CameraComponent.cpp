@@ -54,7 +54,7 @@ void CameraComponent::onDisable() {
 }
 
 void CameraComponent::onUpdate(double time_diff) {
-    mCamera->setPosition(mNode->getPosition(Node::SCENE));
+    mCamera->setPosition(mNode->getPosition(Node::SCENE).getOgreVector3());
     mCamera->setOrientation(mNode->getRotation(Node::SCENE));
 }
 

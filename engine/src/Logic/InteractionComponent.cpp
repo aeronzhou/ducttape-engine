@@ -55,9 +55,9 @@ namespace dt {
             mRemainTime = mInterval;
             Ogre::Vector3 start, end;
             start = getNode()->getRotation(Node::SCENE) * Ogre::Vector3(0.0, 0.0, - mOffset)
-                + getNode()->getPosition(Node::SCENE);
+                + getNode()->getPosition(Node::SCENE).getOgreVector3();
             end = getNode()->getRotation(Node::SCENE) * Ogre::Vector3(0.0, 0.0, - mRange)
-                + getNode()->getPosition(Node::SCENE);
+                + getNode()->getPosition(Node::SCENE).getOgreVector3();
 
 
             emit sCheck(start, end);

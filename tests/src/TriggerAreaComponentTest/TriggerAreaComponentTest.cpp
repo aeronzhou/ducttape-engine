@@ -72,7 +72,7 @@ void Main::onInitialize() {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 
     dt::Node::NodeSP camnode = scene->addChildNode(new dt::Node("camnode"));
-    camnode->setPosition(Ogre::Vector3(0, 0, 50));
+    camnode->setPosition(dt::Vector3(0, 0, 50));
     camnode->addComponent(new dt::CameraComponent("cam"))->lookAt(Ogre::Vector3(0, 0, 0));;
 
     dt::Node::NodeSP meshnode1 = _addMeshNode(scene.get(), "meshNode1", Ogre::Vector3(-15.0f, 20.0f, 0.0f));
@@ -81,7 +81,7 @@ void Main::onInitialize() {
 
     dt::Node::NodeSP triggerAreaNode = scene->addChildNode(new dt::Node("triggerArea"));
     std::shared_ptr<dt::TriggerAreaComponent> triggerAreaComponent = triggerAreaNode->addComponent(new dt::TriggerAreaComponent(new btBoxShape(btVector3(5.0f, 5.0f, 5.0f)), "triggerArea"));
-    triggerAreaNode->setPosition(Ogre::Vector3(-15.0f, 0.0f, 0.0f));
+    triggerAreaNode->setPosition(dt::Vector3(-15.0f, 0.0f, 0.0f));
 
     QObject::connect(triggerAreaComponent.get(), 
                      SIGNAL(triggered(dt::TriggerAreaComponent*, dt::Component*)), 

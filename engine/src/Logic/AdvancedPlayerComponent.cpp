@@ -36,7 +36,7 @@ AdvancedPlayerComponent::AdvancedPlayerComponent(const QString name)
 void AdvancedPlayerComponent::onInitialize() {
     btTransform  start_trans;
     start_trans.setIdentity();
-    start_trans.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
+    start_trans.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE).getOgreVector3()));
     start_trans.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
 
     btScalar character_height = 1.75;
@@ -100,7 +100,7 @@ void AdvancedPlayerComponent::onEnable() {
     //Re-sychronize it.
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
+    transform.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE).getOgreVector3()));
     transform.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
 
     mBtGhostObject->setWorldTransform(transform);

@@ -119,22 +119,22 @@ QString Node::getFullName() const {
         return mParent->getFullName() + "/" + getName();
 }
 
-Ogre::Vector3 Node::getPosition(Node::RelativeTo rel) const {
+Vector3 Node::getPosition(Node::RelativeTo rel) const {
     if(rel == PARENT || mParent == nullptr) {
         return mPosition;
     } else {
-        return mParent->getPosition(SCENE) + mParent->getRotation() * mPosition;
+        return mParent->getPosition(SCENE) + Vector3(mParent->getRotation() * mPosition.getOgreVector3());
     }
 }
 
-void Node::setPosition(Ogre::Vector3 position, Node::RelativeTo rel) {
+void Node::setPosition(Vector3 position, Node::RelativeTo rel) {
     if(mIsUpdatingAfterChange || !mIsEnabled)
         return;
 
     if(rel == PARENT || mParent == nullptr) {
-        mPosition = position;
+        mPosition = (position);
     } else {
-        mPosition = mParent->getRotation() * position - mParent->getPosition(SCENE);
+        mPosition = Vector3((mParent->getRotation() * position.getOgreVector3()) - mParent->getPosition(SCENE).getOgreVector3());
     }
     onUpdate(0);
 }
@@ -191,7 +191,7 @@ void Node::setDirection(Ogre::Vector3 direction, Ogre::Vector3 front_vector) {
 }
 
 void Node::lookAt(Ogre::Vector3 target, Ogre::Vector3 front_vector, RelativeTo rel) {
-    setDirection(target - getPosition(rel), front_vector);
+    setDirection(target - getPosition(rel).getOgreVector3(), front_vector);
 }
 
 void Node::setParent(Node* parent) {

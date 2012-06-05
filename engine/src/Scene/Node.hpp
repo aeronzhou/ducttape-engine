@@ -12,6 +12,7 @@
 #include <Config.hpp>
 
 #include <Scene/Component.hpp>
+#include <Scene/Vector3.hpp>
 #include <Utils/Logger.hpp>
 #include <Utils/Utils.hpp>
 #include <Network/IOPacket.hpp>
@@ -158,14 +159,14 @@ public:
       * @param rel Reference point.
       * @returns The Node position.
       */
-    Ogre::Vector3 getPosition(RelativeTo rel = PARENT) const;
+    Vector3 getPosition(RelativeTo rel = PARENT) const;
 
     /**
       * Sets the position of the Node.
       * @param position The new position of the Node.
       * @param rel Reference point.
       */
-    void setPosition(Ogre::Vector3 position, RelativeTo rel = PARENT);
+    void setPosition(Vector3 position, RelativeTo rel = PARENT);
 
     /**
       * Returns the scale of the Node.
@@ -330,7 +331,7 @@ protected:
 
 private:
     std::map<QString, NodeSP> mChildren;  //!< List of child nodes.
-    Ogre::Vector3 mPosition;              //!< The Node position.
+    Vector3 mPosition;                    //!< The Node position.
     Ogre::Vector3 mScale;                 //!< The Node scale.
     Ogre::Quaternion mRotation;           //!< The Node rotation.
     Node* mParent;                        //!< A pointer to the parent Node.

@@ -124,7 +124,7 @@ void ParticleSystemComponent::onDisable() {
 }
 
 void ParticleSystemComponent::onUpdate(double time_diff) {
-    mSceneNode->setPosition(mNode->getPosition(Node::SCENE));
+    mSceneNode->setPosition(mNode->getPosition(Node::SCENE).getOgreVector3());
     mSceneNode->setOrientation(mNode->getRotation(Node::SCENE));
     mSceneNode->setScale(mNode->getScale(Node::SCENE));
 }
