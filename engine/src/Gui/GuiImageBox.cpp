@@ -25,10 +25,8 @@ void GuiImageBox::onInitialize() {
 }
 
 void GuiImageBox::setImageTexture (const QString &texture) {
-    if(getImageTexture() != texture) {
-		dynamic_cast<MyGUI::ImageBox*>(getMyGUIWidget())->setImageTexture(dt::Utils::toStdString(texture));
-        emit imageTextureChanged(texture);
-    }
+	dynamic_cast<MyGUI::ImageBox*>(getMyGUIWidget())->setImageTexture(dt::Utils::toStdString(texture));
+    emit imageTextureChanged(texture);
 }
 
 size_t GuiImageBox::getImageTexture() {

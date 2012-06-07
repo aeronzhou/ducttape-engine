@@ -28,11 +28,6 @@ public:
       */
     GuiImageBox(const QString name);
 
-	 /**
-      * Pure virtual destructor.
-      */
-    virtual ~GuiImageBox() = 0;
-
     /**
       * Gets the ImageTexture of the widget.
       * @returns The ImageTexture.
