@@ -29,7 +29,7 @@ void Main::onInitialize() {
     OgreProcedural::CapsuleGenerator().setHeight(1.77f).setRadius(0.44f).realizeMesh("player");
 
     Player* player_node = (Player*)scene->addChildNode(new Player("playernode")).get();
-    player_node->setPosition(Ogre::Vector3(0, 1.75, 5));
+    player_node->setPosition(dt::Vector3(0.0f, 1.75f, 5.0f));
     player_node->setControllable(true);
 
     OgreProcedural::SphereGenerator().setRadius(0.3f).setUTile(.5f).realizeMesh("Bullet");
@@ -39,11 +39,11 @@ void Main::onInitialize() {
     Weapon* weapon = (Weapon*)scene->addChildNode(new Weapon("test_gun", interactor, 20, 5, 60,
         2.0f, 0, "fire.wav", "reload_start.wav", "reload_done.wav", "multigun.mesh")).get();
     weapon->enablePhysicsBody(false);
-    weapon->setPosition(5, 2, 5);
+    weapon->setPosition(5.0f, 2.0f, 5.0f);
     weapon->enablePhysicsBody(true);
 
     auto light_node = scene->addChildNode(new dt::Node("lightnode"));
-    light_node->setPosition(Ogre::Vector3(-2000, 2000, 1000));
+    light_node->setPosition(dt::Vector3(-2000.0f, 2000.0f, 1000.0f));
     light_node->addComponent(new dt::LightComponent("light"));
 
     OgreProcedural::PlaneGenerator().setSizeX(100.0f).setSizeY(100.0f).setUTile(10.0).setVTile(10.0).realizeMesh("Plane");
@@ -53,7 +53,7 @@ void Main::onInitialize() {
         dt::PhysicsBodyComponent::CONVEX, 0.0f));
 
     auto test_object = scene->addChildNode(new dt::Node("testobject"));
-    test_object->setPosition(Ogre::Vector3(0, 1, -5));
+    test_object->setPosition(dt::Vector3(0.0f, 1.0f, -5.0f));
     test_object->addComponent(new dt::MeshComponent("Crate01.mesh", "", "test-mesh"))->setCastShadows(true);
     test_object->addComponent(new dt::PhysicsBodyComponent("test-mesh", "ball-body",
         dt::PhysicsBodyComponent::BOX))->setMass(1.0f);

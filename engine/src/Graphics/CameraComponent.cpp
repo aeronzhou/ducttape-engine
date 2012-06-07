@@ -64,7 +64,7 @@ Ogre::Ray CameraComponent::getCameraToViewportRay(float x, float y) {
 
 void CameraComponent::lookAt(Ogre::Vector3 target_point) {
     mCamera->lookAt(target_point);
-    mNode->setRotation(mCamera->getOrientation());
+    mNode->setRotation(Quaternion(mCamera->getOrientation()));
 }
 
 void CameraComponent::lookAt(float x, float y, float z) {

@@ -39,10 +39,10 @@ void Main::updateStateFrame(double simulation_frame_time) {
     if(sphere2->isEnabled() && mRuntime > 1.0) {
         // disable and save position
         sphere2->disable();
-        mSphere2DisabledPosition = sphere2->getNode()->getPosition();
+        mSphere2DisabledPosition = sphere2->getNode()->getPosition().getOgreVector3();
     } else if(!sphere2->isEnabled()) {
         // check if it moved
-        if(mSphere2DisabledPosition != sphere2->getNode()->getPosition()) {
+        if(mSphere2DisabledPosition != sphere2->getNode()->getPosition().getOgreVector3()) {
             std::cerr << "The second sphere moved, even though it should be disabled." << std::endl;
             exit(1);
         }
@@ -50,10 +50,10 @@ void Main::updateStateFrame(double simulation_frame_time) {
 
 
     if(mRuntime >= 3.0 && testscene->getPhysicsWorld()->isEnabled()) {
-        mSphere1DisabledPosition = sphere1->getNode()->getPosition();
+        mSphere1DisabledPosition = sphere1->getNode()->getPosition().getOgreVector3();
     }
     if(!testscene->getPhysicsWorld()->isEnabled()) {
-        if(mSphere1DisabledPosition != sphere1->getNode()->getPosition()) {
+        if(mSphere1DisabledPosition != sphere1->getNode()->getPosition().getOgreVector3()) {
             std::cerr << "The first sphere moved, even though it should be disabled (the whole physics world should be disabled)." << std::endl;
             exit(1);
         }

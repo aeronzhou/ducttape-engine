@@ -92,7 +92,7 @@ void Game::run(State* start_state, int argc, char** argv) {
         if(main_camera != nullptr) {
             auto pos = main_camera->getNode()->getPosition().getOgreVector3();
             auto dir = main_camera->getCamera()->getDirection();
-            sf::Listener::setPosition(pos.x, pos.y, pos.z);
+            sf::Listener::setPosition(pos.getX(), pos.getY(), pos.getZ());
             sf::Listener::setDirection(dir.x, dir.y, dir.z);
         }
 

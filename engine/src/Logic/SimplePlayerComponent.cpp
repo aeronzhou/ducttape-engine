@@ -55,7 +55,7 @@ void SimplePlayerComponent::onUpdate(double time_diff) {
             move = getNode()->getRotation().getOgreQuaternion() * mMove; //update movement direction
         }
 
-        getNode()->setPosition(getNode()->getPosition() + move * time_diff * mMoveSpeed);
+        getNode()->setPosition(getNode()->getPosition() + Vector3(move * time_diff * mMoveSpeed));
         if(!mCostant) {
             mMove = Ogre::Vector3::ZERO;
         }

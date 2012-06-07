@@ -8,7 +8,6 @@
 
 #include <Scene/Node.hpp>
 
-#include <Logic/ScriptManager.hpp>
 #include <Utils/Utils.hpp>
 #include <Scene/Scene.hpp>
 #include <Scene/Serializer.hpp>
@@ -18,7 +17,7 @@ namespace dt {
 Node::Node(const QString name)
     : mName(name),
       mPosition(Vector3::ZERO),
-      mScale(Vector3::UNIT_SCALE),
+      mScale(Vector3(1,1,1)),
       mRotation(Quaternion::IDENTITY),
       mParent(nullptr),
       mIsUpdatingAfterChange(false),
@@ -157,12 +156,12 @@ void Node::setScale(Vector3 scale, Node::RelativeTo rel) {
         mScale = scale;
     } else {
         Vector3 p(mParent->getScale(SCENE));
-        mScale = Vector3(scale.getX() / p.getX(), scale.getY() / p.getY(), scale.getZ() / p.getZ());
+        mScale = Ogre::Vector3(scale.getX() / p.getX(), scale.getY() / p.getY(), scale.getZ() / p.getZ());
     }
     onUpdate(0);
 }
 
-void Node::setScale(Ogre::Real scale, Node::RelativeTo rel) {
+void Node::setScale(float scale, Node::RelativeTo rel) {
     setScale(Vector3(scale, scale, scale), rel);
 }
 
@@ -187,12 +186,12 @@ void Node::setRotation(Quaternion rotation, Node::RelativeTo rel) {
     onUpdate(0);
 }
 
-void Node::setDirection(Vector3 direction, Vector3 front_vector) {
-    setRotation(front_vector.getRotationTo(direction));
+void Node::setDirection(Ogre::Vector3 direction, Ogre::Vector3 front_vector) {
+    setRotation(front_vector.getRotationTo(direction, Ogre::Vector3::UNIT_X));
 }
 
-void Node::lookAt(Vector3 target, Vector3 front_vector, RelativeTo rel) {
-    setDirection(target - getPosition(rel), front_vector);
+void Node::lookAt(Ogre::Vector3 target, Ogre::Vector3 front_vector, RelativeTo rel) {
+    setDirection(target - getPosition(rel).getOgreVector3(), front_vector);
 }
 
 void Node::setParent(Node* parent) {
@@ -298,12 +297,9 @@ void Node::serialize(IOPacket& packet) {
 void Node::onSerialize(IOPacket &packet) {}
 
 void Node::setPosition(float x, float y, float z, RelativeTo rel) {
-    setPosition(Vector3(x,y,z), rel);
+    setPosition(Ogre::Vector3(x,y,z), rel);
 }
 
-QScriptValue Node::scriptGetPosition() {
-    return mPosition.toQtScriptObject();
-}
 
 bool Node::_isScene() {
     return false;
@@ -384,95 +380,5 @@ void Node::disable() {
 void Node::onEnable() {}
 
 void Node::onDisable() {}
-
-QScriptValue Node::getScriptParent() {
-    Node* p_node = getParent();
-
-    return p_node == nullptr ? QScriptValue::UndefinedValue : p_node->toQtScriptObject();
-}
-
-void Node::setScriptParent(QScriptValue parent) {
-    if(parent.isQObject()) {
-        Node* p_node = (Node*)parent.toQObject();
-
-        if(p_node != nullptr) {
-            setParent(p_node);
-        }
-        else {
-            Logger::get().debug("The Node you are setting as Node " + mName + "'s parent has already been deleted.");
-        }
-    }
-    else {
-        Logger::get().error("You are trying to set an invalid Node as Node " + mName + "'s parent.");
-    }
-}
-
-QScriptValue Node::addScriptChildNode(QScriptValue child) {
-    if(child.isQObject()) {
-        Node*  p_node = (Node*)child.toQObject();
-
-        if(p_node != nullptr) {
-            return addChildNode(p_node)->toQtScriptObject();
-        }
-        else {
-            Logger::get().debug("The Node you are adding as Node " + mName + "'s child has already been deleted.");
-        }
-    }
-    else {
-        Logger::get().error("You are trying to add an invalid Node as Node " + mName + "'s child.");
-    }
-
-    return QScriptValue::UndefinedValue;
-}
-
-QScriptValue Node::addScriptComponent(QScriptValue component) {
-    if(component.isQObject()) {
-        Component* p_component = (Component*)component.toQObject();
-
-        if(p_component != nullptr) {
-            return addComponent<Component>(p_component)->toQtScriptObject();
-        }
-        else {
-            Logger::get().debug("The Component you are adding as Node " + mName + "'s Component has already been deleted.");
-        }
-    }
-    else {
-        Logger::get().error("You are trying to add an invalid Component as Node " + mName + "'s Component.");
-    }
-
-    return QScriptValue::UndefinedValue;
-}
-
-QScriptValue Node::findScriptComponent(const QString name) {
-    Component* p_component = findComponent<Component>(name).get();
-
-    if(p_component == nullptr) {
-        return QScriptValue::UndefinedValue;
-    }
-    else {
-        return p_component->toQtScriptObject();
-    }
-}
-
-QScriptValue Node::findScriptChildNode(const QString name, bool recursive) {
-    Node* p_node = findChildNode(name, recursive).get();
-
-    if(p_node == nullptr) {
-        return QScriptValue::UndefinedValue;
-    }
-    else {
-        return p_node->toQtScriptObject();
-    }
-}
-
-QScriptValue Node::getScriptScene() {
-    Scene* p_scene = getScene();
-
-    return p_scene == nullptr ? QScriptValue::UndefinedValue : p_scene->toQtScriptObject();
-}
-
-QScriptValue Node::toQtScriptObject() {
-    return ScriptManager::get()->getScriptEngine()->newQObject(this);
-}
 
 } // namespace dt

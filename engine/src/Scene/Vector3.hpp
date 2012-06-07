@@ -13,16 +13,18 @@
 
 #include <Logic/IScriptable.hpp>
 #include <Logic/ScriptManager.hpp>
-#include <Scene/Quaterion.hpp>
+//#include <Scene/Quaterion.hpp>
 
+#include <btBulletDynamicsCommon.h>
+#include <OGRE/OgreQuaternion.h>
 #include <OGRE/OgreVector3.h>
 
 #include <QScriptProgram>
-//#include <QObject>
+#include <QObject>
 
 namespace dt {
 
-    class Quaternion;
+    //class Quaternion;
 
     /**
       * A class to hold a 3-dimensional vector. Refers to Ogre::Vector3.
@@ -36,12 +38,12 @@ namespace dt {
         /**
           * Non-parameter constructor which constructs a Vector3 with (0.0f, 0.0f, 0.0f).
           */
-        inline Vector3() : mX(0.0f), mY(0.0f), mZ(0.0f), mOgreVector3(mX, mY, mZ) {}
+        Vector3();
 
         /**
           * Copy constructor. (to avoid inaccessibility of QObject copy constructor)
           */
-        inline Vector3(const Vector3 &other) : mX(other.mX), mY(other.mY), mZ(other.mZ), mOgreVector3(other.mX, other.mY, other.mZ) {}
+        Vector3(const Vector3 &other);
 
         /**
           * Uses the given x, y and z value to construct a Vector3.
@@ -49,29 +51,33 @@ namespace dt {
           * @param y The y value.
           * @param z The z value.
           */
-        inline Vector3(const float x, const float y, const float z)
-            : mX(x),
-              mY(y),
-              mZ(z),
-              mOgreVector3(x, y, z) {}
+        Vector3(const float x, const float y, const float z);
 
         /**
           * Uses the given Ogre Vector3 to construct a Vector3.
           * @param ogre_vector The Ogre Vector3.
           */
-        inline Vector3(const Ogre::Vector3& ogre_vector)
-            : mX(ogre_vector.x),
-              mY(ogre_vector.y),
-              mZ(ogre_vector.z),
-              mOgreVector3(ogre_vector) {}
+        Vector3(const Ogre::Vector3 &ogre_vector);
+
+        /**
+          * Uses the given Bullet Vector3 to construct a Vector3.
+          * @param bt_vector The Bullet Vector3.
+          */
+        Vector3(const btVector3 &bt_vector);
 
         /**
           * Convert this Vector3 to an Ogre Vector3.
           * @returns The Ogre Vector3.
           */
-        inline Ogre::Vector3 getOgreVector3() const {
-            return mOgreVector3;
-        }
+        Ogre::Vector3 & getOgreVector3();
+
+        const Ogre::Vector3 & getOgreVector3() const;
+
+        /**
+          * Convert this Vector3 to a Bullet Vector3.
+          * @returns The Bullet Vector3.
+          */
+        btVector3 getBulletVector3() const;
 
         // special values
         static const Vector3 ZERO;
@@ -94,14 +100,14 @@ namespace dt {
           * @param other The other Vector3.
           * @returns The distance between this Vector3 and another Vector3.
           */
-        float getDistance(const Vector3& other) const;
+        Ogre::Real getDistance(const Vector3& other) const;
 
         /**
           * Gets the dot product of this Vector3 and another Vector3.
           * @param other The other Vector3.
           * @returns The dot product.
           */
-        float dotProduct(const Vector3& other) const;
+        Ogre::Real dotProduct(const Vector3& other) const;
 
         /**
           * Gets the cross product of this Vector3 and another Vector3.
@@ -119,7 +125,7 @@ namespace dt {
 
         /**
           * Gets a Vector3 that deviates from this Vector3 within a given angle range randomly.
-          * @param angle_range The angle range.
+          * @param angle_range The angle range, represents in degree.
           * @returns The random Vector3.
           */
         Vector3 getRandomDeviant(float angle_range) const;
@@ -129,14 +135,14 @@ namespace dt {
           * @param other The other Vector3.
           * @returns The angle between this Vector3 and another Vector3.
           */
-        float getAngleBetween(const Vector3& other) const;
+        Ogre::Real getAngleBetween(const Vector3& other);
 
         /**
           * Gets the quaterion to rotate from the direction of this Vector3 to the direction of another Vector3.
           * @param other The other Vector3.
           * @returns The rotation quaterion.
           */
-        Quaternion getRotationTo(const Vector3& other) const;
+        Ogre::Quaternion getRotationTo(const Vector3& other) const;
 
         /**
           * Gets the reflection Vector3 of this Vector3 from a normal Vector3.
@@ -164,40 +170,40 @@ namespace dt {
         inline DUCTTAPE_API friend std::ostream& operator <<
             ( std::ostream& o, const Vector3& v )
         {
-            o << v.mX << " " << v.mY << " " << v.mZ;
+            o << v.mVec.x << " " << v.mVec.y << " " << v.mVec.z;
             return o;
         }
 
         inline DUCTTAPE_API friend std::istream& operator >>
             ( std::istream& i, Vector3& v )
         {
-            i >> v.mX >> v.mY >> v.mZ;
+            i >> v.mVec.x >> v.mVec.y >> v.mVec.z;
             return i;
         }
 
         inline DUCTTAPE_API friend sf::Packet& operator >>
             ( sf::Packet& i, Vector3& v )
         {
-            i >> v.mX >> v.mY >> v.mZ;
+            i >> v.mVec.x >> v.mVec.y >> v.mVec.z;
             return i;
         }
 
         inline DUCTTAPE_API friend sf::Packet& operator <<
             ( sf::Packet& o, const Vector3& v )
         {
-            o << v.mX << v.mY << v.mZ;
+            o << v.mVec.x << v.mVec.y << v.mVec.z;
             return o;
         }
 
         inline DUCTTAPE_API friend const YAML::Node& operator >> (const YAML::Node& node, Vector3& v) {
-            node[0] >> v.mX;
-            node[1] >> v.mY;
-            node[2] >> v.mZ;
+            node[0] >> v.mVec.x;
+            node[1] >> v.mVec.y;
+            node[2] >> v.mVec.z;
             return node;
         }
 
         inline DUCTTAPE_API friend YAML::Emitter& operator << (YAML::Emitter& emitter, Vector3& v) {
-            emitter << YAML::Flow << YAML::BeginSeq << v.mX << v.mY << v.mZ << YAML::EndSeq;
+            emitter << YAML::Flow << YAML::BeginSeq << v.mVec.x << v.mVec.y << v.mVec.z << YAML::EndSeq;
             return emitter;
         }
 
@@ -294,7 +300,7 @@ namespace dt {
           * @param other The other Vector3.
           * @returns The angle between this Vector3 and another Vector3.
           */
-        float scriptGetAngleBetween(QScriptValue other) const;
+        float scriptGetAngleBetween(QScriptValue other);
 
         /**
           * Gets the quaterion to rotate from the direction of this Vector3 to the direction of another Vector3. For script use.
@@ -332,10 +338,7 @@ namespace dt {
         QScriptValue scriptMultiply(float multiplier) const;
 
     private:
-        Ogre::Vector3 mOgreVector3;
-        float mX;         //!< The x value of the Vector3.
-        float mY;         //!< The y value of the Vector3.
-        float mZ;         //!< The z value of the Vector3.
+        Ogre::Vector3 mVec; //!< The vector3.
     };
 }
 
