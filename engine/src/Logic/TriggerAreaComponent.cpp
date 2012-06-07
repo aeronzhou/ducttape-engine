@@ -18,7 +18,7 @@ void TriggerAreaComponent::onUpdate(double time_diff) {
 
     // TODO: Update only on node position change
     btTransform translation;
-    translation.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition().getOgreVector3()));
+    translation.setOrigin(getNode()->getPosition().getBulletVector3());
     mObject->setWorldTransform(translation);
 
     for(int32_t i = 0; i < mObject->getNumOverlappingObjects(); ++i)

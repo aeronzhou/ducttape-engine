@@ -20,6 +20,8 @@
 #include <QScriptProgram>
 #include <QObject>
 
+#include <vector>
+
 namespace dt {
 
     class Vector3;
@@ -41,17 +43,12 @@ namespace dt {
         /**
           * Non-parameter constructor which constructs a Quaternion with (0.0f, 0.0f, 0.0f, 0.0f).
           */
-        inline Quaternion(void) : mW(.0f), mX(.0f), mY(.0f), mZ(.0f), mOgreQuaternion(mW, mX, mY, mZ) {}
+        Quaternion();
 
         /**
           * Copy constructor. (to avoid inaccessibility of QObject copy constructor)
           */
-        inline Quaternion(const Quaternion& other)
-            : mW(other.mW),
-              mX(other.mX),
-              mY(other.mY),
-              mZ(other.mZ),
-              mOgreQuaternion(mW, mX, mY, mZ) {}
+        Quaternion(const Quaternion& other);
 
         /**
           * Uses the given x, y, z, w value to construct a Quaternion.
@@ -60,39 +57,41 @@ namespace dt {
           * @param z The z value.
           * @param w The w value.
           */
-        inline Quaternion(const float x, const float y, const float z, const float w)
-            : mW(w),
-              mX(x),
-              mY(y),
-              mZ(z),
-              mOgreQuaternion(w, x, y, z) {}
+        Quaternion(const float x, const float y, const float z, const float w);
 
         /**
           * Uses the given Ogre Quaternion to construct a Quaternion.
           * @param ogre_quaternion The Ogre Quaternion.
           */
-        inline Quaternion(const Ogre::Quaternion& ogre_quaternion)
-            : mW(ogre_quaternion.w),
-              mX(ogre_quaternion.x),
-              mY(ogre_quaternion.y),
-              mZ(ogre_quaternion.z),
-              mOgreQuaternion(ogre_quaternion) {}
+        Quaternion(const Ogre::Quaternion& ogre_quaternion);
+
+        /**
+          * Uses the given Bullet Quaternion to construct a Quaternion.
+          * @param bt_quaternion The Bullet Quaternion.
+          */
+        Quaternion(const btQuaternion& bt_quaternion);
 
         /**
           * Convert this Quaternion to an Ogre Quaternion.
           * @returns The Ogre Quaternion.
           */
-        Ogre::Quaternion inline getOgreQuaternion() const {
-            return mOgreQuaternion;
-        }
+        Ogre::Quaternion & getOgreQuaternion();
+
+        const Ogre::Quaternion & getOgreQuaternion() const;
+
+        /**
+          * Convert this Quaternion to a Bullet Quaternion.
+          * @returns The Bullet Quaternion.
+          */
+        btQuaternion getBulletQuaternion() const;
 
         // special values
         static const Quaternion ZERO;
         static const Quaternion IDENTITY;
 
 #pragma region operator_override
-        float operator [] (const uint32_t i) const;
-        float& operator [] (const uint32_t i);
+        Ogre::Real operator [] (const uint32_t i) const;
+        Ogre::Real& operator [] (const uint32_t i);
         Quaternion& operator = (const Quaternion& other);
         Quaternion operator + (const Quaternion& other) const;
         Quaternion operator - (const Quaternion& other) const;
@@ -101,46 +100,47 @@ namespace dt {
         Quaternion operator- () const;
         bool operator== (const Quaternion& rhs) const;
         bool operator!= (const Quaternion& rhs) const;
-        Vector3 operator * (const Vector3& vec) const;
+        Vector3 operator * (const Vector3& v);
+        Vector3 operator * (const Ogre::Vector3& v);
 
         inline DUCTTAPE_API friend std::ostream& operator <<
             ( std::ostream& o, const Quaternion& q )
         {
-            o << q.mW << " " << q.mX << " " << q.mY << " " << q.mZ;
+            o << q.mQua.w << " " << q.mQua.x << " " << q.mQua.y << " " << q.mQua.z;
             return o;
         }
 
         inline DUCTTAPE_API friend std::istream& operator >>
             ( std::istream& i, Quaternion& q )
         {
-            i >> q.mW >> q.mX >> q.mY >> q.mZ;
+            i >> q.mQua.w >> q.mQua.x >> q.mQua.y >> q.mQua.z;
             return i;
         }
 
         inline DUCTTAPE_API friend sf::Packet& operator >>
             ( sf::Packet& i, Quaternion& q )
         {
-            i >> q.mW >> q.mX >> q.mY >> q.mZ;
+            i >> q.mQua.w >> q.mQua.x >> q.mQua.y >> q.mQua.z;
             return i;
         }
 
         inline DUCTTAPE_API friend sf::Packet& operator <<
             ( sf::Packet& o, const Quaternion& q )
         {
-            o << q.mW << q.mX << q.mY << q.mZ;
+            o << q.mQua.w << q.mQua.x << q.mQua.y << q.mQua.z;
             return o;
         }
 
         inline DUCTTAPE_API friend const YAML::Node& operator >> (const YAML::Node& node, Quaternion& q) {
-            node[0] >> q.mW;
-            node[1] >> q.mX;
-            node[2] >> q.mY;
-            node[3] >> q.mZ;
+            node[0] >> q.mQua.w;
+            node[1] >> q.mQua.x;
+            node[2] >> q.mQua.y;
+            node[3] >> q.mQua.z;
             return node;
         }
 
         inline DUCTTAPE_API friend YAML::Emitter& operator << (YAML::Emitter& emitter, Quaternion& q) {
-            emitter << YAML::Flow << YAML::BeginSeq << q.mW << q.mX << q.mY << q.mZ << YAML::EndSeq;
+            emitter << YAML::Flow << YAML::BeginSeq << q.mQua.w << q.mQua.x << q.mQua.y << q.mQua.z << YAML::EndSeq;
             return emitter;
         }
 
@@ -165,6 +165,12 @@ namespace dt {
           * @returns The result of cross product.
           */
         Quaternion crossProduct(const Quaternion& other) const;
+
+        /**
+          * Construct rotation matrix from quaternion.
+          * @param rot The rotation matrix.
+          */
+        void toRotationMatrix(Ogre::Matrix3& rot) const;
 
         /**
           * Returns a QtScript object.
@@ -232,12 +238,6 @@ namespace dt {
         float normalise();
 
         /**
-          * Get the length of the Quaternion.
-          * @returns The length of the Quaternion.
-          */
-        float getLength() const;
-
-        /**
           * Get the local roll element of this quaternion.
           * @returns Roll element.
           */
@@ -260,14 +260,20 @@ namespace dt {
           * @param angle Angle to rotate.
           * @param axis Axis to rotate around.
           */
-        void fromAngleAxis(const float angle, const Vector3& axis);
+        void fromAngleAxis(const float angle, Vector3& axis);
+
+        /**
+          * Construct quaternion from rotation matrix
+          * @param rot Rotation matrix.
+          */
+        void fromRotationMatrix(const Ogre::Matrix3& rot);
 
         /**
           * Construct angle and axis from quaternion.
           * @param angle Angle to rotate.
           * @param axis Axis to rotate around.
           */
-        void toAngleAxis(float& angle, Vector3& axis) const;
+        void toAngleAxis(float angle, Vector3& axis) const;
 
 #pragma region script_function
         /**
@@ -325,13 +331,12 @@ namespace dt {
           */
         QScriptValue scriptScale(const float scalar) const;
 #pragma endregion
+    private:
+        Quaternion * _newInstance(Quaternion
 
     private:
-        Ogre::Quaternion mOgreQuaternion;
-        float mW;         //!< The w value of the Quaternion.
-        float mX;         //!< The x value of the Quaternion.
-        float mY;         //!< The y value of the Quaternion.
-        float mZ;         //!< The z value of the Quaternion.
+        Ogre::Quaternion mQua;   //!< The Quaternion.
+        static std::vector<Quaternion*> mPool; // For script use.
     };
 }
 

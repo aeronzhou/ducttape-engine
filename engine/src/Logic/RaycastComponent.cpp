@@ -20,8 +20,8 @@ RaycastComponent::RaycastComponent(const QString name)
 
 void RaycastComponent::onCheck(const Vector3& start, const Vector3& end) {
     btVector3 bt_start, bt_end;
-    bt_start = BtOgre::Convert::toBullet(start.getOgreVector3());
-    bt_end = BtOgre::Convert::toBullet(end.getOgreVector3());
+    bt_start = start.getBulletVector3();
+    bt_end = end.getBulletVector3();
 
     btCollisionWorld::ClosestRayResultCallback raycast_callback(bt_start, bt_end);
 

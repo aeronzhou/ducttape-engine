@@ -38,7 +38,7 @@ void CollisionComponent::onCheck(const Vector3& start, const Vector3& end) {
             Logger::get().error("Cannot connect the bullet's collided signal with the OnHit slot.");
     }
 
-    bullet_body->applyCentralImpulse(BtOgre::Convert::toBullet(impulse.getOgreVector3()) * mRange);
+    bullet_body->applyCentralImpulse(impulse.getBulletVector3() * mRange);
 }
 
 void CollisionComponent::onHit(PhysicsBodyComponent* hit, PhysicsBodyComponent* bullet) {

@@ -39,10 +39,10 @@ void Main::updateStateFrame(double simulation_frame_time) {
     if(sphere2->isEnabled() && mRuntime > 1.0) {
         // disable and save position
         sphere2->disable();
-        mSphere2DisabledPosition = sphere2->getNode()->getPosition().getOgreVector3();
+        mSphere2DisabledPosition = sphere2->getNode()->getPosition();
     } else if(!sphere2->isEnabled()) {
         // check if it moved
-        if(mSphere2DisabledPosition != sphere2->getNode()->getPosition().getOgreVector3()) {
+        if(mSphere2DisabledPosition != sphere2->getNode()->getPosition()) {
             std::cerr << "The second sphere moved, even though it should be disabled." << std::endl;
             exit(1);
         }
@@ -50,10 +50,10 @@ void Main::updateStateFrame(double simulation_frame_time) {
 
 
     if(mRuntime >= 3.0 && testscene->getPhysicsWorld()->isEnabled()) {
-        mSphere1DisabledPosition = sphere1->getNode()->getPosition().getOgreVector3();
+        mSphere1DisabledPosition = sphere1->getNode()->getPosition();
     }
     if(!testscene->getPhysicsWorld()->isEnabled()) {
-        if(mSphere1DisabledPosition != sphere1->getNode()->getPosition().getOgreVector3()) {
+        if(mSphere1DisabledPosition != sphere1->getNode()->getPosition()) {
             std::cerr << "The first sphere moved, even though it should be disabled (the whole physics world should be disabled)." << std::endl;
             exit(1);
         }
@@ -99,7 +99,7 @@ void Main::onInitialize() {
     planenode->setPosition(Ogre::Vector3(0, 0, 0));
     Ogre::Quaternion q;
     q.FromAngleAxis(Ogre::Degree(20), Ogre::Vector3::UNIT_X);
-    planenode->setRotation(q);
+    planenode->setRotation(dt::Quaternion(q));
     planenode->addComponent(new dt::MeshComponent("Plane", "PrimitivesTest/Pebbles", "plane-mesh"));
     planenode->addComponent(new dt::PhysicsBodyComponent("plane-mesh", "plane-body"))->setMass(0.f);
 

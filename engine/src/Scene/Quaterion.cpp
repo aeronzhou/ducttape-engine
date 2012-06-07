@@ -9,219 +9,163 @@
 #include <Scene/Quaterion.hpp>
 
 namespace dt {
-    /*Quaternion::Quaternion() : mW(.0f), mX(.0f), mY(.0f), mZ(.0f), mOgreQuaternion(mW, mX, mY, mZ) {}
+    std::vector<Quaternion*> Quaternion::mPool(32);
+
+    Quaternion::Quaternion() : mQua(Ogre::Quaternion::IDENTITY) {}
 
     Quaternion::Quaternion(const float w, const float x, const float y, const float z)
-        : mW(w),
-        mX(x),
-        mY(y),
-        mZ(z),
-        mOgreQuaternion(w, x, y, z) {}
+        : mQua(w, x, y, z) {}
 
     Quaternion::Quaternion(const Quaternion& other)
-        : mW(other.mW),
-        mX(other.mX),
-        mY(other.mY),
-        mZ(other.mZ),
-        mOgreQuaternion(mW, mX, mY, mZ) {}
+        : mQua(other.mQua) {}
 
     Quaternion::Quaternion(const Ogre::Quaternion& ogre_quaternion)
-        : mW(ogre_quaternion.w),
-        mX(ogre_quaternion.x),
-        mY(ogre_quaternion.y),
-        mZ(ogre_quaternion.z),
-        mOgreQuaternion(ogre_quaternion) {}
+        : mQua(ogre_quaternion) {}
 
-    Ogre::Quaternion Quaternion::getOgreQuaternion() const
+    Quaternion::Quaternion(const btQuaternion& bt_quaternion)
+        : mQua(bt_quaternion.getW(), bt_quaternion.getX(), bt_quaternion.getY(), bt_quaternion.getZ()) {}
+
+    Ogre::Quaternion & Quaternion::getOgreQuaternion()
     {
-        return mOgreQuaternion;
-    }*/
+        return mQua;
+    }
+
+    const Ogre::Quaternion & Quaternion::getOgreQuaternion() const
+    {
+        return mQua;
+    }
+
+    btQuaternion Quaternion::getBulletQuaternion() const
+    {
+        return btQuaternion(mQua.x, mQua.y, mQua.z, mQua.w);
+    }
 
     const Quaternion Quaternion::ZERO(0.0f, 0.0f, 0.0f, 0.0f);
     const Quaternion Quaternion::IDENTITY(1.0f, 0.0f, 0.0f, 0.0f);
 
-    inline float Quaternion::operator [] (const uint32_t i) const
+    inline Ogre::Real Quaternion::operator [] (const uint32_t i) const
     {
-        /*assert(i < 4);
-        return *(&mW+i);*/
-        return mOgreQuaternion[i];
+        return mQua[i];
     }
 
-    inline float& Quaternion::operator [] (const uint32_t i)
+    inline Ogre::Real& Quaternion::operator [] (const uint32_t i)
     {
-        /*assert(i < 4);
-        return *(&mW+i);*/
-        return mOgreQuaternion[i];
+        return mQua[i];
     }
 
     Quaternion& Quaternion::operator = (const Quaternion& other)
     {
-        mW = other.mW;
-        mX = other.mX;
-        mY = other.mY;
-        mZ = other.mZ;
-        mOgreQuaternion = other.mOgreQuaternion;
-
+        mQua = other.mQua;
         return *this;
     }
 
     inline Quaternion Quaternion::operator + (const Quaternion& other) const
     {
-        //return Quaternion(mW + other.mW, mX + other.mX, mY + other.mY, mZ + other.mZ);
-        return Quaternion(mOgreQuaternion + other.mOgreQuaternion);
+        return Quaternion(mQua + other.mQua);
     }
 
     inline Quaternion Quaternion::operator - (const Quaternion& other) const
     {
-        return Quaternion(mOgreQuaternion - other.mOgreQuaternion);
+        return Quaternion(mQua - other.mQua);
     }
 
     Quaternion Quaternion::operator * (const Quaternion& other) const
     {
-        return Quaternion(mOgreQuaternion * other.mOgreQuaternion);
+        return Quaternion(mQua * other.mQua);
     }
 
     inline Quaternion Quaternion::operator * (const float scalar) const
     {
-        return Quaternion(mOgreQuaternion * scalar);
+        return Quaternion(mQua * scalar);
     }
 
     Quaternion Quaternion::operator- () const
     {
-        return Quaternion(-mOgreQuaternion);
+        return Quaternion(-mQua);
     }
 
     inline bool Quaternion::operator== (const Quaternion& rhs) const
     {
-        //return (rhs.mW == mW) && (rhs.mX == mX) &&
-        //    (rhs.mY == mY) && (rhs.mZ == mZ);
-        return mOgreQuaternion == rhs.mOgreQuaternion;
+        return mQua == rhs.mQua;
     }
 
     inline bool Quaternion::operator!= (const Quaternion& rhs) const
     {
-        //return !operator==(rhs);
-        return mOgreQuaternion != rhs.mOgreQuaternion;
+        return mQua != rhs.mQua;
     }
 
-    Vector3 Quaternion::operator * (const Vector3& v) const
+    Vector3 Quaternion::operator * (const Vector3& v)
     {
-        // nVidia SDK implementation
-        /*Vector3 uv, uuv;
-        Vector3 qvec(mX, mY, mZ);
-        uv = qvec.crossProduct(v);
-        uuv = qvec.crossProduct(uv);
-        uv = uv * (2.0f * mW);
-        uuv = uuv * 2.0f;
-
-        return v + uv + uuv;*/
-        return Vector3(mOgreQuaternion * v.getOgreVector3());
+        return Vector3(mQua * v.getOgreVector3());
     }
 
-    float Quaternion::getW() const { return mOgreQuaternion.w; }
-    float Quaternion::getX() const { return mOgreQuaternion.x; }
-    float Quaternion::getY() const { return mOgreQuaternion.y; }
-    float Quaternion::getZ() const { return mOgreQuaternion.z; }
-    void Quaternion::setW(const float w) { mOgreQuaternion.w = w; }
-    void Quaternion::setX(const float x) { mOgreQuaternion.x = x; }
-    void Quaternion::setY(const float y) { mOgreQuaternion.y = y; }
-    void Quaternion::setZ(const float z) { mOgreQuaternion.z = z; }
+    Vector3 Quaternion::operator * (const Ogre::Vector3& v)
+    {
+        return Vector3(mQua * v);
+    }
+
+    float Quaternion::getW() const { return mQua.w; }
+    float Quaternion::getX() const { return mQua.x; }
+    float Quaternion::getY() const { return mQua.y; }
+    float Quaternion::getZ() const { return mQua.z; }
+    void Quaternion::setW(const float w) { mQua.w = w; }
+    void Quaternion::setX(const float x) { mQua.x = x; }
+    void Quaternion::setY(const float y) { mQua.y = y; }
+    void Quaternion::setZ(const float z) { mQua.z = z; }
 
     void Quaternion::swap(Quaternion& other)
     {
-        /*std::swap(mW, other.mW);
-        std::swap(mX, other.mX);
-        std::swap(mY, other.mY);
-        std::swap(mZ, other.mZ);
-        std::swap(mOgreQuaternion, other.mOgreQuaternion);*/
-        mOgreQuaternion.swap(other.mOgreQuaternion);
+        mQua.swap(other.mQua);
     }
 
     float Quaternion::dotProduct(const Quaternion& other) const
     {
-        //return mW * other.mW + mX * other.mX + mY * other.mY + mZ * other.mZ;
-        return mOgreQuaternion.Dot(other.mOgreQuaternion);
+        return mQua.Dot(other.mQua);
     }
 
     Quaternion Quaternion::crossProduct(const Quaternion& other) const
     {
-        //return (*this) * other;
-        return mOgreQuaternion * other.mOgreQuaternion;
+        return mQua * other.mQua;
     }
 
-    float Quaternion::getLength() const
+    void Quaternion::toRotationMatrix(Ogre::Matrix3& rot) const
     {
-        return sqrt(mW * mW + mX * mX + mY * mY + mZ * mZ);
+        mQua.ToRotationMatrix(rot);
     }
 
     float Quaternion::normalise()
-    {/*
-        float length = sqrt(mW * mW + mX * mX + mY * mY + mZ * mZ);
-        if (length != 0)
-        {
-            (*this) = (*this) * (1.0f / length);
-        }
-
-        mOgreQuaternion.normalise();
-
-        return length;*/
-        return mOgreQuaternion.normalise();
+    {
+        return mQua.normalise();
     }
 
     float Quaternion::getRoll() const
     {
-        return mOgreQuaternion.getRoll().valueRadians();
-        //return atan2f(2 * (mX * mY + mW * mZ), mW * mW + mX * mX - mY * mY - mZ * mZ);
+        return mQua.getRoll().valueRadians();
     }
 
     float Quaternion::getPitch() const
     {
-        return mOgreQuaternion.getPitch().valueRadians();
-        //return atan2f(2 * (mY * mZ + mW * mX), mW * mW - mX * mX - mY * mY + mZ * mZ);
+        return mQua.getPitch().valueRadians();
     }
 
     float Quaternion::getYaw() const
     {
-        return mOgreQuaternion.getYaw().valueRadians();
-        //return asinf(-2 * (mX * mZ - mW * mY));
+        return mQua.getYaw().valueRadians();
     }
 
-    void Quaternion::fromAngleAxis(const float angle, const Vector3& axis)
+    void Quaternion::fromAngleAxis(const float angle, Vector3& axis)
     {
-        // from Ogre
-        /*float halfAngle = 0.5f * angle;
-        float sin = sinf(halfAngle);
-        mW = cos(halfAngle);
-        mX = sin * axis.getX();
-        mY = sin * axis.getY();
-        mZ = sin * axis.getZ();*/
-        mOgreQuaternion.FromAngleAxis(Ogre::Radian(angle), axis.getOgreVector3());
+        mQua.FromAngleAxis(Ogre::Radian(angle), axis.getOgreVector3());
     }
 
-    void Quaternion::toAngleAxis(float& angle, Vector3& axis) const
+    void Quaternion::fromRotationMatrix(const Ogre::Matrix3& rot)
     {
-        // from Ogre
-        float sqrLength = mX * mX + mY * mY + mZ * mZ;
-        if (sqrLength > 0.0f)
-        {
-            angle = 2.0f * acos(mW);
-            float invLength = sqrtf(sqrLength);
-            if (invLength != 0.0f)
-            {
-                invLength = 1.0f / invLength;
-            }
-            axis.setX(mX * invLength);
-            axis.setY(mY * invLength);
-            axis.setZ(mZ * invLength);
-        }
-        else
-        {
-            // angle is 0 (mod 2*pi), so any axis will do
-            angle = 0.0f;
-            axis.setX(1.0f);
-            axis.setY(0.0f);
-            axis.setZ(0.0f);
-        }
+        mQua.FromRotationMatrix(rot);
+    }
+
+    void Quaternion::toAngleAxis(float angle, Vector3& axis) const
+    {
+        mQua.ToAngleAxis(Ogre::Degree(angle), axis.getOgreVector3());
     }
 
     void Quaternion::scriptSwap(QScriptValue other)
@@ -318,7 +262,8 @@ namespace dt {
         if(other.isQObject()) {
             Quaternion* p_qua = (Quaternion*)other.toQObject();
             if(p_qua != nullptr) {
-                return (*this + *p_qua).toQtScriptObject();
+                mPool.push_back(new Quaternion(*this + *p_qua));
+                return mPool.back()->toQtScriptObject();
             }
             else {
                 Logger::get().debug("The Quaternion you are trying to use has been deleted.");
@@ -351,6 +296,7 @@ namespace dt {
 
     QScriptValue Quaternion::scriptScale(float scalar) const
     {
-        return ((*this) * scalar).toQtScriptObject();
+        mPool.push_back(new Quaternion((*this) * scalar));
+        return mPool.back()->toQtScriptObject();
     }
 }
