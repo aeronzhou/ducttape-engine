@@ -28,4 +28,15 @@ QString GuiTextBox::getCaption() {
     return QString(dynamic_cast<MyGUI::TextBox*>(getMyGUIWidget())->getCaption().asUTF8_c_str());
 }
 
+void  GuiTextBox::setTextColour (const MyGUI::Colour &_value) {
+	if(getTextColour() != _value) {
+		dynamic_cast<MyGUI::TextBox*>(getMyGUIWidget())->setTextColour(_value);
+        emit textColourChanged(_value);
+	}
+}
+
+const MyGUI::Colour& GuiTextBox::getTextColour() {
+	return dynamic_cast<MyGUI::TextBox*>(getMyGUIWidget())->getTextColour();
+}
+
 }

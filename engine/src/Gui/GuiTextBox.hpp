@@ -42,6 +42,12 @@ public:
       * @returns The caption.
       */
     QString getCaption();
+	
+	/**
+      * Gets the textcolor of the widget.
+      * @returns The textcolor.
+      */
+	const MyGUI::Colour& getTextColour();
 
 public slots:
     /**
@@ -50,8 +56,15 @@ public slots:
       */
     void setCaption(QString caption);
 
+	/**
+      * Sets the TextColour of the widget.
+      * @param _value The new textColour.
+      */
+	void  setTextColour (const MyGUI::Colour &_value);
+
 signals:
     void captionChanged(QString caption);
+	void  textColourChanged(MyGUI::Colour _value);
 };
 
 }
