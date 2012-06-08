@@ -24,4 +24,13 @@ void GuiButton::onInitialize() {
     mButton = getParent()->getMyGUIWidget()->createWidget<MyGUI::Button>("Button", 0, 0, 100, 100, MyGUI::Align::Default, dt::Utils::toStdString(getFullName()));
 }
 
+void GuiButton::setStateSelected(bool _value) {
+    dynamic_cast<MyGUI::Button*>(getMyGUIWidget())->setStateSelected(_value);
+    emit stateSelectedChanged(_value);
+}
+
+bool GuiButton::getStateSelected() {
+    return dynamic_cast<MyGUI::Button*>(getMyGUIWidget())->getStateSelected();
+}
+
 }

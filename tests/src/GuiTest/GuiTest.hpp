@@ -20,6 +20,8 @@
 #include <Gui/GuiLabel.hpp>
 #include <Gui/GuiImageBox.hpp>
 #include <Gui/GuiProgressBar.hpp>
+#include <Gui/GuiScrollBar.hpp>
+#include <Gui/GuiCheckBox.hpp>
 #include <Scene/Game.hpp>
 #include <Scene/Node.hpp>
 #include <Scene/Scene.hpp>
@@ -39,11 +41,13 @@ class Main: public dt::State {
 public:
     Main();
     void click(MyGUI::Widget* _sender);
+    void scrollChangePosition(MyGUI::ScrollBar* _sender, size_t _position);
     void onInitialize();
     void updateStateFrame(double simulation_frame_time);
 
 private:
     double mRuntime;
+    std::tr1::shared_ptr<dt::GuiProgressBar> progressBar1;
 };
 
 } // namespace GuiTest

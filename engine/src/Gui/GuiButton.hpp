@@ -30,7 +30,22 @@ public:
     MyGUI::Widget* getMyGUIWidget();
     void onInitialize();
 
-private:
+    /** 
+      *Set button selected state
+      *@param _value StateSelected
+      */
+    void setStateSelected(bool _value);
+	
+    /** 
+      *Get buton selected
+      *@returns StateSelected
+      */
+	bool getStateSelected();
+
+signals:
+    void stateSelectedChanged(bool _value);
+
+protected:
     MyGUI::Button* mButton;
 
 };
