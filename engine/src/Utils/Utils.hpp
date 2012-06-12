@@ -35,6 +35,13 @@ template <typename Source> QString toString(const Source& source) {
   */
 DUCTTAPE_API std::string toStdString(const QString qstring);
 
+/**
+  * Convert a QString to a std::wstring. Use it to replace qt's toStdWString() which has a locale bug.
+  * @param qstring The QString you are going to convert.
+  * @returns The converted std::wstring.
+  */
+DUCTTAPE_API std::wstring toWString(const QString qstring);
+
 extern uint32_t mAutoId;
 
 /**
