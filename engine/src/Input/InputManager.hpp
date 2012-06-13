@@ -239,6 +239,13 @@ public:
     bool getJailInput() const;
 
     /**
+      * Gets whether a given key or mouse button is pressed or not.
+      * @param code The code of a given key or mouse button.
+      * @returns Whether a given key or mouse button is pressed or not.
+      */
+    bool isPressed(InputCode code);
+
+    /**
       * OIS callback.
       * @internal
       * @param event The OIS event.

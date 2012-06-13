@@ -194,4 +194,13 @@ void InputManager::_createInputSystem() {
     windowResized(mWindow);
 }
 
+bool InputManager::isPressed(InputCode code) {
+    if(code >= MC_LEFT) {
+        return getMouse()->getMouseState().buttonDown((OIS::MouseButtonID)(code - MC_LEFT));
+    }
+    else {
+        return getKeyboard()->isKeyDown((OIS::KeyCode)code);
+    }
+}
+
 }

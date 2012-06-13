@@ -16,10 +16,12 @@ void TriggerAreaComponent::onUpdate(double time_diff) {
         return;
     }
 
-    // TODO: Update only on node position change
-    btTransform translation;
-    translation.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition()));
-    mObject->setWorldTransform(translation);
+    //// TODO: Update only on node position change
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
+    transform.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
+    mObject->setWorldTransform(transform);
 
     for(int32_t i = 0; i < mObject->getNumOverlappingObjects(); ++i)
     {
@@ -29,8 +31,14 @@ void TriggerAreaComponent::onUpdate(double time_diff) {
 }
 
 void TriggerAreaComponent::onInitialize() {
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
+    transform.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
+    
     mObject.reset(new btGhostObject());
     mObject->setCollisionShape(mArea.get());
+    mObject->setWorldTransform(transform);
     mObject->setCollisionFlags(mObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
     getNode()->getScene()->getPhysicsWorld()->getBulletWorld()->addCollisionObject(mObject.get());
 }
