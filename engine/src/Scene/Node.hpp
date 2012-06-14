@@ -243,6 +243,24 @@ public:
       */
     virtual void onDisable();
 
+    /**
+      * Returns the current State.
+      * @returns The current State.
+      */
+    State* getState();
+
+    /**
+      * Returns a pointer to the parent Node.
+      * @returns A pointer to the parent Node.
+      */
+    Node* getParent();
+
+    /**
+      * Returns the Scene this Node is attached to.
+      * @returns The Scene this Node is attached to.
+      */
+    Scene* getScene();
+
 public slots:
     /**
       * Returns the name of the Node.
@@ -256,17 +274,7 @@ public slots:
       */
     QString getFullName() const;
 
-    /**
-      * Returns a pointer to the parent Node.
-      * @returns A pointer to the parent Node.
-      */
-    Node* getParent();
-
-    /**
-      * Returns the Scene this Node is attached to.
-      * @returns The Scene this Node is attached to.
-      */
-    Scene* getScene();
+    
 
     /**
       * Sets the position of the Node.
