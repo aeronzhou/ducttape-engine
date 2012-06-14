@@ -12,6 +12,8 @@
 #include <Config.hpp>
 
 #include <Scene/Component.hpp>
+#include <Scene/Vector3.hpp>
+#include <Scene/Quaterion.hpp>
 #include <Utils/Logger.hpp>
 #include <Utils/Utils.hpp>
 #include <Network/IOPacket.hpp>
@@ -158,49 +160,49 @@ public:
       * @param rel Reference point.
       * @returns The Node position.
       */
-    Ogre::Vector3 getPosition(RelativeTo rel = PARENT) const;
+    Vector3 getPosition(RelativeTo rel = PARENT) const;
 
     /**
       * Sets the position of the Node.
       * @param position The new position of the Node.
       * @param rel Reference point.
       */
-    void setPosition(Ogre::Vector3 position, RelativeTo rel = PARENT);
+    void setPosition(Vector3 position, RelativeTo rel = PARENT);
 
     /**
       * Returns the scale of the Node.
       * @param rel Reference scale.
       * @returns The scale of the Node
       */
-    Ogre::Vector3 getScale(RelativeTo rel = PARENT) const;
+    Vector3 getScale(RelativeTo rel = PARENT) const;
 
     /**
       * Sets the scale of the Node.
       * @param scale The new scale.
       * @param rel Reference scale.
       */
-    void setScale(Ogre::Vector3 scale, RelativeTo rel = PARENT);
+    void setScale(Vector3 scale, RelativeTo rel = PARENT);
 
     /**
       * Sets the scale of the Node.
       * @param scale The new scale to use for all axis.
       * @param rel Reference scale.
       */
-    void setScale(Ogre::Real scale, RelativeTo rel = PARENT);
+    void setScale(float scale, RelativeTo rel = PARENT);
 
     /**
       * Returns the rotation of the Node.
       * @param rel Reference rotation.
       * @returns The Rotation of the Node.
       */
-    Ogre::Quaternion getRotation(RelativeTo rel = PARENT) const;
+    Quaternion getRotation(RelativeTo rel = PARENT) const;
 
     /**
       * Sets the rotation of the Node.
       * @param rotation The rotation to set.
       * @param rel Reference rotation.
       */
-    void setRotation(Ogre::Quaternion rotation, RelativeTo rel = PARENT);
+    void setRotation(Quaternion rotation, RelativeTo rel = PARENT);
 
     /**
       * Sets the direction the Node is facing.
@@ -338,9 +340,9 @@ protected:
 
 private:
     std::map<QString, NodeSP> mChildren;  //!< List of child nodes.
-    Ogre::Vector3 mPosition;              //!< The Node position.
-    Ogre::Vector3 mScale;                 //!< The Node scale.
-    Ogre::Quaternion mRotation;           //!< The Node rotation.
+    Vector3 mPosition;                    //!< The Node position.
+    Vector3 mScale;                       //!< The Node scale.
+    Quaternion mRotation;                 //!< The Node rotation.
     Node* mParent;                        //!< A pointer to the parent Node.
     bool mIsUpdatingAfterChange;          //!< Whether the node is just in the process of updating all components after a change occurred. This is to prevent infinite stack loops.
     QUuid mId;                            //!< The node's uuid.

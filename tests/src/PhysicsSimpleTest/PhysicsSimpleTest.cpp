@@ -99,7 +99,7 @@ void Main::onInitialize() {
     planenode->setPosition(Ogre::Vector3(0, 0, 0));
     Ogre::Quaternion q;
     q.FromAngleAxis(Ogre::Degree(20), Ogre::Vector3::UNIT_X);
-    planenode->setRotation(q);
+    planenode->setRotation(dt::Quaternion(q));
     planenode->addComponent(new dt::MeshComponent("Plane", "PrimitivesTest/Pebbles", "plane-mesh"));
     planenode->addComponent(new dt::PhysicsBodyComponent("plane-mesh", "plane-body"))->setMass(0.f);
 

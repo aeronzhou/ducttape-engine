@@ -101,7 +101,7 @@ protected:
       * @param start The absolute starting position for the check.
       * @param end The absolute ending position for the check.
       */
-    virtual void onCheck(const btVector3& start, const btVector3& end) = 0;
+    virtual void onCheck(const Vector3& start, const Vector3& end) = 0;
 
 signals:
     /**
@@ -115,7 +115,7 @@ signals:
       * @param start The absolute starting position for the check.
       * @param end The absolute ending position for the check.
       */
-    void sCheck(Ogre::Vector3 start, Ogre::Vector3 end);
+    void sCheck(Vector3 start, Vector3 end);
 
 protected:
     float mRange;          //<! The start position of the InteractionComponent's range relative to its position.

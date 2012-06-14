@@ -6,6 +6,8 @@
 // http://www.gnu.org/licenses/lgpl.html
 // ----------------------------------------------------------------------------
 
+
+
 #ifndef DUCTTAPE_ENGINE_CONFIG
 #define DUCTTAPE_ENGINE_CONFIG
 
@@ -16,6 +18,27 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 #define DUCTTAPE_VERSION STR(DUCTTAPE_VERSION_MAJOR) "." STR(DUCTTAPE_VERSION_MINOR) "." STR(DUCTTAPE_VERSION_PATCH)
+
+// Makes interface available for C++
+// Refers to http://www.codeguru.com/cpp/cpp/cpp_mfc/oop/article.php/c9989/Using-Interfaces-in-C.htm
+
+#ifdef _MSC_VER
+#define INTERFACE(name) __interface actual_##name {
+#define BASED_INTERFACE(name, base) __interface actual_##name : public base {
+#define END_INTERFACE(name) };                                  \
+                            class name : public actual_##name { \
+                            public:                             \
+                            virtual ~name() {}                  \
+                            };
+#else
+#define INTERFACE(name) class name {       \
+                                public:            \
+                                virtual ~name() {}
+#define BASED_INTERFACE(name, base) class name : public base { \
+                                            public:                    \
+                                            virtual ~name() {}
+#define END_INTERFACE(name) };
+#endif
 
 // The following definitions are kindly taken from SFML
 

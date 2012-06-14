@@ -18,10 +18,10 @@ CollisionComponent::CollisionComponent(const QString bullet_handle, const QStrin
     : InteractionComponent(name),
       mBulletMeshHandle(bullet_handle) {}
 
-void CollisionComponent::onCheck(const btVector3& start, const btVector3& end) {
-    btVector3 impulse;
+void CollisionComponent::onCheck(const Vector3& start, const Vector3& end) {
+    Vector3 impulse;
     impulse = end - start;
-    impulse.normalize();
+    impulse.normalise();
 
     auto id = Utils::autoId();
     QString name = QString("bullet") + Utils::toString(id);
@@ -29,7 +29,7 @@ void CollisionComponent::onCheck(const btVector3& start, const btVector3& end) {
     std::shared_ptr<Node> bullet = getNode()->getScene()->addChildNode(new Node(QString(id)));
 
     bullet->addComponent<MeshComponent>(new MeshComponent(mBulletMeshHandle, "", name));
-    bullet->setPosition(BtOgre::Convert::toOgre(start), Node::SCENE);
+    bullet->setPosition(start, Node::SCENE);
     std::shared_ptr<PhysicsBodyComponent> bullet_body = bullet->addComponent<PhysicsBodyComponent>(new PhysicsBodyComponent(name, "bullet_body"));
     bullet_body->setMass(1.0);
 
@@ -38,7 +38,7 @@ void CollisionComponent::onCheck(const btVector3& start, const btVector3& end) {
             Logger::get().error("Cannot connect the bullet's collided signal with the OnHit slot.");
     }
 
-    bullet_body->applyCentralImpulse(impulse * mRange);
+    bullet_body->applyCentralImpulse(impulse.getBulletVector3() * mRange);
 }
 
 void CollisionComponent::onHit(PhysicsBodyComponent* hit, PhysicsBodyComponent* bullet) {

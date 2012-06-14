@@ -45,9 +45,9 @@ void MeshComponent::onDisable() {
 
 void MeshComponent::onUpdate(double time_diff) {
     // set position, rotation and scale of the node
-    mSceneNode->setPosition(getNode()->getPosition(Node::SCENE));
-    mSceneNode->setOrientation(getNode()->getRotation(Node::SCENE));
-    mSceneNode->setScale(getNode()->getScale(Node::SCENE));
+    mSceneNode->setPosition(getNode()->getPosition(Node::SCENE).getOgreVector3());
+    mSceneNode->setOrientation(getNode()->getRotation(Node::SCENE).getOgreQuaternion());
+    mSceneNode->setScale(getNode()->getScale(Node::SCENE).getOgreVector3());
 
     if(mAnimationState != nullptr && mAnimationState->getEnabled()) {
         mAnimationState->addTime(time_diff);

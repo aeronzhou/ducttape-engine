@@ -1,6 +1,7 @@
 #include <Graphics/TextComponent.hpp>
 #include <Scene/Node.hpp>
 #include <Scene/State.hpp>
+#include <Scene/Vector3.hpp>
 
 #include <OgreVector3.h>
 

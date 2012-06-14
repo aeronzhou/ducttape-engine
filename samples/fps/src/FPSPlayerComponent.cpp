@@ -2,6 +2,7 @@
 
 #include <Logic/InteractionComponent.hpp>
 #include <Scene/Scene.hpp>
+#include <Scene/Vector3.hpp>
 #include <Input/InputManager.hpp>
 #include <Utils/Logger.hpp>
 
@@ -49,7 +50,7 @@ void FPSPlayerComponent::addWeapon(Weapon* weapon) {
 
         weapon->enablePhysicsBody(false);
         weapon->setParent(this->getNode());
-        weapon->setRotation(Ogre::Quaternion::IDENTITY);
+        weapon->setRotation(dt::Quaternion::IDENTITY);
         weapon->setPosition(0.5f, -0.5f, -1.0f);
         mWeapons[index] = weapon;
 
@@ -137,9 +138,9 @@ void FPSPlayerComponent::removeWeapon(uint16_t weapon_type) {
     if(mWeaponNum >= weapon_type && mWeapons[weapon_type] != nullptr) {
         if(mWeaponInUse == mWeapons[weapon_type])
             mWeaponInUse = nullptr;
-
+        
         mWeapons[weapon_type]->setPosition(0.0f, 0.0f, -3.0f);
-        Ogre::Vector3 pos = mWeapons[weapon_type]->getPosition(dt::Node::SCENE);
+        dt::Vector3 pos = mWeapons[weapon_type]->getPosition(dt::Node::SCENE);
         mWeapons[weapon_type]->setParent(this->getNode()->getScene());
         mWeapons[weapon_type]->setPosition(pos, dt::Node::SCENE);
         mWeapons[weapon_type]->enablePhysicsBody(true);
