@@ -37,11 +37,6 @@ void GuiWidget::initialize() {
 
 void GuiWidget::deinitialize() {
     // destroy all children
-    /*for(auto iter = mChildren.begin(); iter != mChildren.end(); ++iter) {
-        iter->second->Deinitialize();
-
-        iter = mChildren.erase(iter);
-    }*/
     removeAllChildren();
     // destroy the mygui widget
     GuiManager::get()->getGuiSystem()->destroyWidget(getMyGUIWidget());

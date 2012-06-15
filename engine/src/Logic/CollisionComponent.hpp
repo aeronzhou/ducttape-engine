@@ -57,7 +57,7 @@ protected:
      * @param end The absolute ending position for the check.
      * @see InteractionComponent
      */
-    void onCheck(const Vector3& start, const Vector3& end);
+    void onCheck(const Ogre::Vector3& start, const Ogre::Vector3& end);
 
 protected slots:
      /**

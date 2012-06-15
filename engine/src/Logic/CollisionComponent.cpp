@@ -18,8 +18,8 @@ CollisionComponent::CollisionComponent(const QString bullet_handle, const QStrin
     : InteractionComponent(name),
       mBulletMeshHandle(bullet_handle) {}
 
-void CollisionComponent::onCheck(const Vector3& start, const Vector3& end) {
-    Vector3 impulse;
+void CollisionComponent::onCheck(const Ogre::Vector3& start, const Ogre::Vector3& end) {
+    Ogre::Vector3 impulse;
     impulse = end - start;
     impulse.normalise();
 
@@ -38,7 +38,7 @@ void CollisionComponent::onCheck(const Vector3& start, const Vector3& end) {
             Logger::get().error("Cannot connect the bullet's collided signal with the OnHit slot.");
     }
 
-    bullet_body->applyCentralImpulse(impulse.getBulletVector3() * mRange);
+    bullet_body->applyCentralImpulse(BtOgre::Convert::toBullet(impulse) * mRange);
 }
 
 void CollisionComponent::onHit(PhysicsBodyComponent* hit, PhysicsBodyComponent* bullet) {

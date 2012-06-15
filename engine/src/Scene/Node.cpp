@@ -16,9 +16,9 @@ namespace dt {
 
 Node::Node(const QString name)
     : mName(name),
-      mPosition(Vector3::ZERO),
-      mScale(Vector3(1,1,1)),
-      mRotation(Quaternion::IDENTITY),
+      mPosition(Ogre::Vector3::ZERO),
+      mScale(Ogre::Vector3(1,1,1)),
+      mRotation(Ogre::Quaternion::IDENTITY),
       mParent(nullptr),
       mIsUpdatingAfterChange(false),
       mDeathMark(false),
@@ -119,7 +119,7 @@ QString Node::getFullName() const {
         return mParent->getFullName() + "/" + getName();
 }
 
-Vector3 Node::getPosition(Node::RelativeTo rel) const {
+Ogre::Vector3 Node::getPosition(Node::RelativeTo rel) const {
     if(rel == PARENT || mParent == nullptr) {
         return mPosition;
     } else {
@@ -127,7 +127,7 @@ Vector3 Node::getPosition(Node::RelativeTo rel) const {
     }
 }
 
-void Node::setPosition(Vector3 position, Node::RelativeTo rel) {
+void Node::setPosition(Ogre::Vector3 position, Node::RelativeTo rel) {
     if(mIsUpdatingAfterChange || !mIsEnabled)
         return;
 
@@ -139,33 +139,33 @@ void Node::setPosition(Vector3 position, Node::RelativeTo rel) {
     onUpdate(0);
 }
 
-Vector3 Node::getScale(Node::RelativeTo rel) const {
+Ogre::Vector3 Node::getScale(Node::RelativeTo rel) const {
     if(rel == PARENT || mParent == nullptr) {
         return mScale;
     } else {
-        Vector3 p(mParent->getScale(SCENE));
-        return Vector3(p.getX() * mScale.getX(), p.getY() * mScale.getY(), p.getZ() * mScale.getZ());
+        Ogre::Vector3 p = mParent->getScale(SCENE);
+        return Ogre::Vector3(p.x * mScale.x, p.y * mScale.y, p.z * mScale.z);
     }
 }
 
-void Node::setScale(Vector3 scale, Node::RelativeTo rel) {
+void Node::setScale(Ogre::Vector3 scale, Node::RelativeTo rel) {
     if(mIsUpdatingAfterChange || !mIsEnabled)
         return;
 
     if(rel == PARENT || mParent == nullptr) {
         mScale = scale;
     } else {
-        Vector3 p(mParent->getScale(SCENE));
-        mScale = Ogre::Vector3(scale.getX() / p.getX(), scale.getY() / p.getY(), scale.getZ() / p.getZ());
+        Ogre::Vector3 p = mParent->getScale(SCENE);
+        mScale = Ogre::Vector3(scale.x / p.x, scale.y / p.y, scale.z / p.z);
     }
     onUpdate(0);
 }
 
 void Node::setScale(float scale, Node::RelativeTo rel) {
-    setScale(Vector3(scale, scale, scale), rel);
+    setScale(Ogre::Vector3(scale, scale, scale), rel);
 }
 
-Quaternion Node::getRotation(Node::RelativeTo rel) const {
+Ogre::Quaternion Node::getRotation(Node::RelativeTo rel) const {
     if(rel == PARENT || mParent == nullptr) {
         return mRotation;
     } else {
@@ -173,7 +173,7 @@ Quaternion Node::getRotation(Node::RelativeTo rel) const {
     }
 }
 
-void Node::setRotation(Quaternion rotation, Node::RelativeTo rel) {
+void Node::setRotation(Ogre::Quaternion rotation, Node::RelativeTo rel) {
     if(mIsUpdatingAfterChange || !mIsEnabled)
         return;
 
@@ -191,7 +191,7 @@ void Node::setDirection(Ogre::Vector3 direction, Ogre::Vector3 front_vector) {
 }
 
 void Node::lookAt(Ogre::Vector3 target, Ogre::Vector3 front_vector, RelativeTo rel) {
-    setDirection(target - getPosition(rel).getOgreVector3(), front_vector);
+    setDirection(target - getPosition(rel), front_vector);
 }
 
 void Node::setParent(Node* parent) {
@@ -245,7 +245,7 @@ void Node::serialize(IOPacket& packet) {
     packet.stream(mId, "uuid");
     packet.stream(mName, "name", mName);
     packet.stream(mPosition, "position");
-    packet.stream(mScale, "scale", Vector3::UNIT_SCALE);
+    packet.stream(mScale, "scale", Ogre::Vector3::UNIT_SCALE);
     packet.stream(mRotation, "rotation");
     packet.stream(mIsEnabled, "enabled");
     onSerialize(packet);

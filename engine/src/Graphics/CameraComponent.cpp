@@ -54,8 +54,8 @@ void CameraComponent::onDisable() {
 }
 
 void CameraComponent::onUpdate(double time_diff) {
-    mCamera->setPosition(mNode->getPosition(Node::SCENE).getOgreVector3());
-    mCamera->setOrientation(mNode->getRotation(Node::SCENE).getOgreQuaternion());
+    mCamera->setPosition(mNode->getPosition(Node::SCENE));
+    mCamera->setOrientation(mNode->getRotation(Node::SCENE));
 }
 
 Ogre::Ray CameraComponent::getCameraToViewportRay(float x, float y) {
@@ -64,7 +64,7 @@ Ogre::Ray CameraComponent::getCameraToViewportRay(float x, float y) {
 
 void CameraComponent::lookAt(Ogre::Vector3 target_point) {
     mCamera->lookAt(target_point);
-    mNode->setRotation(Quaternion(mCamera->getOrientation()));
+    mNode->setRotation(Ogre::Quaternion(mCamera->getOrientation()));
 }
 
 void CameraComponent::lookAt(float x, float y, float z) {

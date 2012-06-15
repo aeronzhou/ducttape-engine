@@ -105,7 +105,7 @@ void TextComponent::onUpdate(double time_diff) {
         return;
     }
     Ogre::Camera* camera = DisplayManager::get()->getMainCamera()->getCamera();
-    Ogre::Vector3 screen_pos(camera->getProjectionMatrix() * camera->getViewMatrix() * getNode()->getPosition(Node::SCENE).getOgreVector3());
+    Ogre::Vector3 screen_pos(camera->getProjectionMatrix() * camera->getViewMatrix() * getNode()->getPosition(Node::SCENE));
 
     if(screen_pos.z >= 1) {
         // behind or in the camera, hide

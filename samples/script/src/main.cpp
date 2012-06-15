@@ -21,6 +21,7 @@
 #include <Core/ResourceManager.hpp>
 #include <Logic/ScriptManager.hpp>
 #include <Scene/StateManager.hpp>
+#include <Graphics/TextComponent.hpp>
 
 #include <QList>
 #include <QString>
@@ -175,7 +176,6 @@ public:
         e->globalObject().setProperty("quit", e->newFunction(Main::quitFunction));
         e->globalObject().setProperty("exit", e->newFunction(Main::quitFunction));
 
-
         dt::DisplayManager::get()->setWindowSize(800, 600);
         dt::ResourceManager::get()->addResourceLocation("gui", "FileSystem", true);
         dt::ResourceManager::get()->addResourceLocation("", "FileSystem", true);
@@ -183,7 +183,18 @@ public:
 
         auto scene = addScene(new dt::Scene("scene"));
         auto camnode = scene->addChildNode(new dt::Node("cam"));
-        camnode->addComponent(new dt::CameraComponent("camera"));
+        camnode->setPosition(0, 0, 30);
+        camnode->addComponent(new dt::CameraComponent("camera"))->lookAt(0, 0, 0);
+
+        auto textnode = scene->addChildNode(new dt::Node("text"));
+        auto textcomponent = textnode->addComponent<dt::TextComponent>(new dt::TextComponent("Default", "text_component"));
+        textcomponent->setColor(Ogre::ColourValue(0.5, 0.0, 1.0));
+        textcomponent->setFont("DejaVuSans");
+        textcomponent->setFontSize(32);
+
+        textnode->setPosition(0, 0, 0);
+
+        e->globalObject().setProperty("component", e->newQObject(textcomponent.get()));
 
         // create GUI
         dt::GuiRootWindow& win = dt::GuiManager::get()->getRootWindow();

@@ -36,8 +36,8 @@ AdvancedPlayerComponent::AdvancedPlayerComponent(const QString name)
 void AdvancedPlayerComponent::onInitialize() {
     btTransform  start_trans;
     start_trans.setIdentity();
-    start_trans.setOrigin(getNode()->getPosition(Node::SCENE).getBulletVector3());
-    start_trans.setRotation(getNode()->getRotation(Node::SCENE).getBulletQuaternion());
+    start_trans.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
+    start_trans.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
 
     btScalar character_height = 1.75;
     btScalar character_width = 0.44;
@@ -100,8 +100,8 @@ void AdvancedPlayerComponent::onEnable() {
     //Re-sychronize it.
     btTransform transform;
     transform.setIdentity();
-    transform.setOrigin(getNode()->getPosition(Node::SCENE).getBulletVector3());
-    transform.setRotation(getNode()->getRotation(Node::SCENE).getBulletQuaternion());
+    transform.setOrigin(BtOgre::Convert::toBullet(getNode()->getPosition(Node::SCENE)));
+    transform.setRotation(BtOgre::Convert::toBullet(getNode()->getRotation(Node::SCENE)));
 
     mBtGhostObject->setWorldTransform(transform);
     getNode()->getScene()->getPhysicsWorld()->getBulletWorld()->addCollisionObject(mBtGhostObject.get());
@@ -254,7 +254,7 @@ void AdvancedPlayerComponent::_handleMouseMove(const OIS::MouseEvent& event) {
             // watch out for da gimbal lock !!
 
             Ogre::Matrix3 orientMatrix;
-            getNode()->getRotation().toRotationMatrix(orientMatrix);
+            getNode()->getRotation().ToRotationMatrix(orientMatrix);
 
             Ogre::Radian yaw, pitch, roll;
             orientMatrix.ToEulerAnglesYXZ(yaw, pitch, roll);
@@ -271,8 +271,8 @@ void AdvancedPlayerComponent::_handleMouseMove(const OIS::MouseEvent& event) {
 
             orientMatrix.FromEulerAnglesYXZ(yaw, pitch, roll);
 
-            Quaternion rot;
-            rot.fromRotationMatrix(orientMatrix);
+            Ogre::Quaternion rot;
+            rot.FromRotationMatrix(orientMatrix);
             getNode()->setRotation(rot);
         }
     }

@@ -53,10 +53,10 @@ namespace dt {
     void InteractionComponent::check() {
         if(isReady() && this->isEnabled()) {
             mRemainTime = mInterval;
-            Vector3 start, end;
-            start = getNode()->getRotation(Node::SCENE) * Vector3(0.0, 0.0, - mOffset)
+            Ogre::Vector3 start, end;
+            start = getNode()->getRotation(Node::SCENE) * Ogre::Vector3(0.0, 0.0, - mOffset)
                 + getNode()->getPosition(Node::SCENE);
-            end = getNode()->getRotation(Node::SCENE) * Vector3(0.0, 0.0, - mRange)
+            end = getNode()->getRotation(Node::SCENE) * Ogre::Vector3(0.0, 0.0, - mRange)
                 + getNode()->getPosition(Node::SCENE);
 
 

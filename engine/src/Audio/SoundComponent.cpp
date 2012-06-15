@@ -27,9 +27,9 @@ void SoundComponent::onInitialize() {}
 void SoundComponent::onDeinitialize() {}
 
 void SoundComponent::onUpdate(double time_diff) {
-    mSound.setPosition(mNode->getPosition(Node::SCENE).getX(),
-                       mNode->getPosition(Node::SCENE).getY(),
-                       mNode->getPosition(Node::SCENE).getZ());
+    mSound.setPosition(mNode->getPosition(Node::SCENE).x,
+                       mNode->getPosition(Node::SCENE).y,
+                       mNode->getPosition(Node::SCENE).z);
 }
 
 void SoundComponent::onSerialize(IOPacket& packet) {

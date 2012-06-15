@@ -29,7 +29,7 @@ void Player::onInitialize() {
 
     //this->addComponent(mMesh);
     this->addComponent(mStatus);
-    this->addComponent(mCamera)->lookAt(Ogre::Vector3(0, 0, -10));
+    this->addComponent(mCamera);
     this->addComponent(mController);
     this->addComponent(mWalkingSound);
     this->addComponent(mJumpingSound);
@@ -83,6 +83,8 @@ void Player::onInitialize() {
                          this,        SLOT(_onJump()), Qt::DirectConnection)) {
         dt::Logger::get().debug(QString("Failed to connect the controller's sStop with the player's _OnStop()"));
     }
+
+    mController->setMouseSensitivity(1);
 }
 
 void Player::_refreshAmmo(uint16_t current_ammo) {

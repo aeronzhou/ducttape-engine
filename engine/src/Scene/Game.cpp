@@ -90,7 +90,7 @@ void Game::run(State* start_state, int argc, char** argv) {
         // Update the listener.
         auto main_camera = root.getDisplayManager()->getMainCamera();
         if(main_camera != nullptr) {
-            auto pos = main_camera->getNode()->getPosition().getOgreVector3();
+            auto pos = main_camera->getNode()->getPosition();
             auto dir = main_camera->getCamera()->getDirection();
             sf::Listener::setPosition(pos.x, pos.y, pos.z);
             sf::Listener::setDirection(dir.x, dir.y, dir.z);

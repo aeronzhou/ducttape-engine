@@ -141,7 +141,7 @@ private:
     std::vector<Ogre::Vector3> mPoints; //!< The list of path points.
     float mDurationSinceStart;          //!< The time the Node has been traveling.
     float mTotalDuration;               //!< The time it will take the Node to travel the whole path.
-    Ogre::Vector3 mLastPoint;           //!< The point the Node has been at in the last frame. Used to calculate the direction.
+    Ogre::Vector3 mLastPoint;                 //!< The point the Node has been at in the last frame. Used to calculate the direction.
 
     bool mSmoothCorners;        //!< Whether the path's corners should be rounded.
     bool mSmoothAcceleration;   //!< Whether the component should accelerate smoothly at the beginning and the end.

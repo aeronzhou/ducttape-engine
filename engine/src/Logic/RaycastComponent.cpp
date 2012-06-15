@@ -18,10 +18,10 @@ namespace dt {
 RaycastComponent::RaycastComponent(const QString name)
     : InteractionComponent(name) {}
 
-void RaycastComponent::onCheck(const Vector3& start, const Vector3& end) {
+void RaycastComponent::onCheck(const Ogre::Vector3& start, const Ogre::Vector3& end) {
     btVector3 bt_start, bt_end;
-    bt_start = start.getBulletVector3();
-    bt_end = end.getBulletVector3();
+    bt_start = BtOgre::Convert::toBullet(start);
+    bt_end = BtOgre::Convert::toBullet(end);
 
     btCollisionWorld::ClosestRayResultCallback raycast_callback(bt_start, bt_end);
 
