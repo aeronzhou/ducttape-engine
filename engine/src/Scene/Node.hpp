@@ -264,6 +264,13 @@ public:
       */
     Scene* getScene();
 
+protected:
+	/**
+	  * Set mIsUpdatingAfterChange.
+	  * @param flag True if the Node is updating after change.
+	  */
+	void setIsUpdatingAfterChange(bool flag);
+
 public slots:
     /**
       * Returns the name of the Node.

@@ -236,6 +236,10 @@ Scene* Node::getScene() {
         return nullptr;
 }
 
+void Node::setIsUpdatingAfterChange(bool flag) {
+	mIsUpdatingAfterChange = flag;
+}
+
 void Node::onUpdate(double time_diff) {
     if(mIsEnabled) {
         _updateAllChildren(time_diff);
