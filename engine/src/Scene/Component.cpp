@@ -73,7 +73,7 @@ Node* Component::getNode() {
 QScriptValue Component::getScriptNode() {
     // Making QScriptValue from Node. Type conversion in C style only due to limitation of incomplete type.
     // return dt::ScriptManager::GetScriptEngine()->newQObject((QObject*)mNode);
-    return dt::ScriptManager::get()->getScriptEngine()->newQObject(mNode);
+    return mNode->toQtScriptObject();
 }
 
 void Component::initialize() {
@@ -116,6 +116,10 @@ bool Component::isInitialized() {
 
 bool Component::isEnabled() {
     return mIsEnabled;
+}
+
+QScriptValue Component::toQtScriptObject() {
+    return ScriptManager::get()->getScriptEngine()->newQObject(this);
 }
 
 } // namespace dt

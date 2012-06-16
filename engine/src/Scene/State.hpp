@@ -14,6 +14,7 @@
 //#include <Event/Event.hpp>
 //#include <Event/EventListener.hpp>
 #include <Scene/Scene.hpp>
+#include <Logic/IScriptable.hpp>
 
 #include <QObject>
 #include <QString>
@@ -27,7 +28,7 @@ namespace dt {
   * @warning Class mockup only. Documentation suspended.
   * @see StateManager
   */
-class DUCTTAPE_API State : public QObject {
+class DUCTTAPE_API State : public QObject, public IScriptable {
     Q_OBJECT
 
 public:
@@ -90,6 +91,8 @@ public:
 
 public slots:
     void updateFrame(double simulation_frame_time);
+
+    QScriptValue toQtScriptObject();
 
 private:
     std::map<QString, Scene::SceneSP> mScenes;        //!< List of scenes.

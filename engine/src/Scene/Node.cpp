@@ -8,6 +8,8 @@
 
 #include <Scene/Node.hpp>
 
+#include <Scene/StateManager.hpp>
+#include <Logic/ScriptManager.hpp>
 #include <Utils/Utils.hpp>
 #include <Scene/Scene.hpp>
 #include <Scene/Serializer.hpp>
@@ -375,6 +377,41 @@ void Node::disable() {
 
         onDisable();
     }
+}
+
+State* Node::getState() {
+    return StateManager::get()->getCurrentState();
+}
+
+QScriptValue Node::getScriptState() {
+    State* state = getState();
+
+    if(state != nullptr)
+        return getState()->toQtScriptObject();
+    else
+        return QScriptValue::UndefinedValue;
+}
+
+QScriptValue Node::toQtScriptObject() {
+    return ScriptManager::get()->getScriptEngine()->newQObject(this);
+}
+
+QScriptValue Node::getScriptParent() {
+    Node* parent = this->getParent();
+
+    if(parent != nullptr)
+        return parent->toQtScriptObject();
+    else
+        return QScriptValue::UndefinedValue;
+}
+
+QScriptValue Node::getScriptScene() {
+    Node* scene = this->getScene();
+
+    if(scene != nullptr)
+        return scene->toQtScriptObject();
+    else
+        return QScriptValue::UndefinedValue;
 }
 
 void Node::onEnable() {}

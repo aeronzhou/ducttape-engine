@@ -14,6 +14,7 @@
 #include <Utils/Utils.hpp>
 #include <Network/IOPacket.hpp>
 #include <Scene/Serializer.hpp>
+#include <Logic/IScriptable.hpp>
 
 #include <QObject>
 #include <QScriptValue>
@@ -144,6 +145,8 @@ public slots:
       * Disables the component.
       */
     void disable();
+
+    QScriptValue toQtScriptObject();
 
 signals:
     void componentInitialized();

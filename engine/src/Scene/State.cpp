@@ -7,6 +7,7 @@
 // ----------------------------------------------------------------------------
 
 #include <Scene/State.hpp>
+#include <Logic/ScriptManager.hpp>
 
 namespace dt {
 
@@ -64,6 +65,10 @@ void State::updateSceneFrame(double simulation_frame_time) {
     for(auto i = mScenes.begin();i != mScenes.end(); i++) {
         i->second->updateFrame(simulation_frame_time);
     }
+}
+
+QScriptValue State::toQtScriptObject() {
+    return ScriptManager::get()->getScriptEngine()->newQObject(this);
 }
 
 } // namespace dt

@@ -14,6 +14,7 @@
 #include <Scene/Component.hpp>
 #include <Utils/Logger.hpp>
 #include <Utils/Utils.hpp>
+#include <Logic/IScriptable.hpp>
 #include <Network/IOPacket.hpp>
 
 #include <OgreQuaternion.h>
@@ -28,6 +29,7 @@ namespace dt {
 
 // forward declaration due to circular dependency
 class Scene;
+class State;
 
 /**
   * Basic scene object class.
@@ -36,13 +38,14 @@ class Scene;
   * its behaviour, e.g. the look or events.
   * @see Component
   */
-class DUCTTAPE_API Node : public QObject {
+class DUCTTAPE_API Node : public QObject, public IScriptable {
     Q_OBJECT
     Q_ENUMS(RelativeTo)
 
     Q_PROPERTY(QString name READ getName CONSTANT FINAL)
-    Q_PROPERTY(Node* parent READ getParent FINAL)
-    Q_PROPERTY(Scene* scene READ getScene FINAL)
+    Q_PROPERTY(QScriptValue parent READ getScriptParent FINAL)
+    Q_PROPERTY(QScriptValue scene READ getScriptScene FINAL)
+    Q_PROPERTY(QScriptValue state READ getScriptState FINAL)
 
 public:
     
@@ -247,7 +250,7 @@ public:
       * Returns the current State.
       * @returns The current State.
       */
-    //State* getState();
+    State* getState();
 
     /**
       * Returns a pointer to the parent Node.
@@ -274,7 +277,23 @@ public slots:
       */
     QString getFullName() const;
 
-    
+    /**
+      * Returns the current State. For script use.
+      * @returns The current State.
+      */
+    QScriptValue getScriptState();
+
+    /**
+      * Returns the parent of the Node. For script use.
+      * @returns The parent of the Node.
+      */
+    QScriptValue getScriptParent();
+
+    /**
+      * Returns the Scene. For script use.
+      * @returns The Scene.
+      */
+    QScriptValue getScriptScene();
 
     /**
       * Sets the position of the Node.
@@ -307,6 +326,8 @@ public slots:
       * @returns Whether the node is enabled.
       */
     bool isEnabled();
+
+    QScriptValue toQtScriptObject();
 
 signals:
     void positionChanged();
